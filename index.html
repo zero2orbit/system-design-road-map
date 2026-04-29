@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Design Mastery Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f0e8;
+    --surface: #ede8df;
+    --card: #e8e2d8;
+    --border: #d0c8b8;
+    --ink: #1a1612;
+    --ink2: #3d3528;
+    --muted: #8a8070;
+    --accent: #c23b22;
+    --accent2: #1a4a6e;
+    --accent3: #2d6a2d;
+    --accent4: #7a5c0a;
+    --accent5: #6b2d6b;
+
+    --p1: #c23b22;
+    --p2: #1a4a6e;
+    --p3: #2d6a2d;
+    --p4: #7a5c0a;
+    --p5: #6b2d6b;
+    --p6: #1a3a3a;
+    --p7: #c23b22;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NOISE TEXTURE OVERLAY */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  .container { max-width: 1060px; margin: 0 auto; padding: 0 28px; }
+
+  /* HEADER */
+  header {
+    padding: 56px 0 40px;
+    border-bottom: 3px solid var(--ink);
+    position: relative;
+    overflow: hidden;
+  }
+  .header-eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .header-eyebrow::before {
+    content: '';
+    width: 32px;
+    height: 2px;
+    background: var(--accent);
+  }
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(64px, 10vw, 128px);
+    line-height: 0.9;
+    letter-spacing: 1px;
+    color: var(--ink);
+  }
+  h1 em { color: var(--accent); font-style: normal; }
+  .header-meta {
+    display: flex;
+    gap: 28px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  .meta-item {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .meta-item strong { color: var(--ink2); }
+  .stamp {
+    position: absolute;
+    right: 0; top: 50%;
+    transform: translateY(-50%) rotate(8deg);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 80px;
+    color: var(--accent);
+    opacity: 0.07;
+    pointer-events: none;
+    line-height: 1;
+  }
+
+  /* STICKY NAV */
+  .nav-bar {
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    border-bottom: 2px solid var(--ink);
+    z-index: 100;
+    padding: 0;
+  }
+  .nav-inner {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav-inner::-webkit-scrollbar { display: none; }
+  .nav-tab {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 12px 18px;
+    border-right: 1px solid var(--border);
+    cursor: pointer;
+    white-space: nowrap;
+    color: var(--muted);
+    text-decoration: none;
+    transition: all 0.15s;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+  }
+  .nav-tab:hover { color: var(--ink); background: var(--surface); }
+  .nav-tab.active { color: var(--ink); border-bottom-color: var(--accent); background: var(--surface); }
+
+  /* PHASE BLOCK */
+  .phase {
+    margin: 40px 0;
+    border: 2px solid var(--ink);
+    background: white;
+  }
+  .phase-header {
+    display: flex;
+    align-items: stretch;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 2px solid var(--ink);
+  }
+  .phase-num-block {
+    padding: 16px 20px;
+    border-right: 2px solid var(--ink);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+  }
+  .phase-num-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .phase-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 40px;
+    line-height: 1;
+  }
+  .phase-title-block {
+    flex: 1;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .phase-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 0.5px;
+  }
+  .phase-subtitle {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .phase-toggle-block {
+    padding: 16px 20px;
+    border-left: 2px solid var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .phase-toggle {
+    font-size: 20px;
+    transition: transform 0.3s;
+    color: var(--ink2);
+  }
+  .phase.collapsed .phase-toggle { transform: rotate(-90deg); }
+  .phase-body { padding: 28px; }
+  .phase.collapsed .phase-body { display: none; }
+
+  /* SECTION DIVIDER */
+  .divider {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 24px 0 16px;
+  }
+  .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* TOPIC GRID */
+  .topic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+  .topic-card {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    padding: 14px;
+    position: relative;
+  }
+  .tc-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  .tc-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+  .tc-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .tc-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    padding: 2px 7px;
+    border: 1px solid;
+  }
+  .tag-req { border-color: var(--accent2); color: var(--accent2); background: rgba(26,74,110,0.06); }
+  .tag-par { border-color: var(--accent3); color: var(--accent3); background: rgba(45,106,45,0.06); }
+  .tag-unlocks { border-color: var(--accent); color: var(--accent); background: rgba(194,59,34,0.06); }
+  .phase-stripe {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 3px;
+  }
+
+  /* EXERCISE BLOCK */
+  .ex-block { margin-bottom: 14px; }
+  .ex-level-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .level-b { color: var(--accent3); }
+  .level-i { color: var(--accent4); }
+  .level-a { color: var(--accent); }
+  .ex-list { display: flex; flex-direction: column; gap: 5px; }
+  .ex-item {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink2);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    line-height: 1.5;
+    border-left: 2px solid var(--border);
+  }
+  .ex-item::before { content: '› '; color: var(--muted); }
+
+  /* PROJECT CARD */
+  .project-card {
+    border: 2px solid var(--ink);
+    background: var(--surface);
+    padding: 22px;
+    margin-bottom: 14px;
+    position: relative;
+  }
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: -2px; left: -2px; right: -2px;
+    height: 4px;
+  }
+  .proj-ms {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .proj-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 0.5px;
+    color: var(--ink);
+    margin-bottom: 8px;
+    line-height: 1.1;
+  }
+  .proj-desc {
+    font-size: 13px;
+    color: var(--ink2);
+    line-height: 1.65;
+    margin-bottom: 14px;
+  }
+  .proj-meta { display: flex; flex-wrap: wrap; gap: 6px; }
+  .proj-chip {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    padding: 3px 10px;
+    border: 1px solid var(--border);
+    color: var(--ink2);
+    background: white;
+  }
+  .proj-chip strong { color: var(--ink); }
+
+  /* SUMMARY TABLE */
+  .ref-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+  }
+  .ref-table th {
+    background: var(--ink);
+    color: var(--bg);
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .ref-table td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--ink2);
+    vertical-align: top;
+    line-height: 1.4;
+  }
+  .ref-table tr:nth-child(even) td { background: var(--surface); }
+  .ref-table tr:hover td { background: var(--card); }
+
+  /* PHASE COLOR VARS */
+  .p1h .phase-num, .p1h .phase-title { color: var(--p1); }
+  .p2h .phase-num, .p2h .phase-title { color: var(--p2); }
+  .p3h .phase-num, .p3h .phase-title { color: var(--p3); }
+  .p4h .phase-num, .p4h .phase-title { color: var(--p4); }
+  .p5h .phase-num, .p5h .phase-title { color: var(--p5); }
+  .p6h .phase-num, .p6h .phase-title { color: var(--p6); }
+  .p7h .phase-num, .p7h .phase-title { color: var(--p7); }
+
+  /* FOOTER */
+  footer {
+    margin-top: 60px;
+    padding: 28px 0;
+    border-top: 2px solid var(--ink);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  @media(max-width:600px){
+    .topic-grid { grid-template-columns: 1fr; }
+    h1 { font-size: 56px; }
+    .phase-num-block { min-width: 60px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-eyebrow">roadmap.sh · System Design</div>
+    <h1>SYSTEM<br><em>DESIGN</em><br>MASTERY</h1>
+    <div class="stamp">ARCHITECT</div>
+    <div class="header-meta">
+      <div class="meta-item"><strong>7 Phases</strong> — Structured progression</div>
+      <div class="meta-item"><strong>55+ Topics</strong> — Zero skipped</div>
+      <div class="meta-item"><strong>12 Projects</strong> — Milestone-based</div>
+      <div class="meta-item"><strong>3 Levels</strong> — Beginner → Production</div>
+    </div>
+  </header>
+
+  <!-- NAV -->
+  <nav class="nav-bar">
+    <div class="nav-inner">
+      <a class="nav-tab active" href="#p1">Phase 1: Fundamentals</a>
+      <a class="nav-tab" href="#p2">Phase 2: Networking</a>
+      <a class="nav-tab" href="#p3">Phase 3: Databases</a>
+      <a class="nav-tab" href="#p4">Phase 4: Caching & Async</a>
+      <a class="nav-tab" href="#p5">Phase 5: Scalability</a>
+      <a class="nav-tab" href="#p6">Phase 6: Cloud Patterns</a>
+      <a class="nav-tab" href="#p7">Phase 7: Reliability & Security</a>
+      <a class="nav-tab" href="#ref">Quick Reference</a>
+    </div>
+  </nav>
+
+  <!-- ====== PHASE 1 ====== -->
+  <div class="phase" id="p1">
+    <div class="phase-header p1h" onclick="togglePhase(this)">
+      <div class="phase-num-block">
+        <div class="phase-num-label">Phase</div>
+        <div class="phase-num">01</div>
+      </div>
+      <div class="phase-title-block">
+        <div class="phase-title">Core Concepts & Fundamentals</div>
+        <div class="phase-subtitle">8 topics — The mental models everything else is built on</div>
+      </div>
+      <div class="phase-toggle-block"><span class="phase-toggle">▾</span></div>
+    </div>
+    <div class="phase-body">
+      <div class="divider">Topics</div>
+      <div class="topic-grid">
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p1)"></div>
+          <div class="tc-num">01</div><div class="tc-name">What is System Design?</div>
+          <div class="tc-tags"><span class="tc-tag tag-par">parallel: all basics</span><span class="tc-tag tag-unlocks">→ Everything</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p1)"></div>
+          <div class="tc-num">02</div><div class="tc-name">How to Approach System Design</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: topic 01</span><span class="tc-tag tag-unlocks">→ Interview framework</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p1)"></div>
+          <div class="tc-num">03</div><div class="tc-name">Performance vs Scalability</div>
+          <div class="tc-tags"><span class="tc-tag tag-par">parallel: 04, 05</span><span class="tc-tag tag-unlocks">→ Scaling decisions</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p1)"></div>
+          <div class="tc-num">04</div><div class="tc-name">Latency vs Throughput</div>
+          <div class="tc-tags"><span class="tc-tag tag-par">parallel: 03, 05</span><span class="tc-tag tag-unlocks">→ Caching, CDN</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p1)"></div>
+          <div class="tc-num">05</div><div class="tc-name">Availability vs Consistency</div>
+          <div class="tc-tags"><span class="tc-tag tag-par">parallel: 03, 04</span><span class="tc-tag tag-unlocks">→ CAP Theorem</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p1)"></div>
+          <div class="tc-num">06</div><div class="tc-name">CAP Theorem (AP, CP)</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: 05</span><span class="tc-tag tag-unlocks">→ DB selection, Replication</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p1)"></div>
+          <div class="tc-num">07</div><div class="tc-name">Consistency Patterns (Weak, Eventual, Strong)</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: CAP Theorem</span><span class="tc-tag tag-unlocks">→ Caching strategies</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p1)"></div>
+          <div class="tc-num">08</div><div class="tc-name">Availability Patterns (Fail-Over, Active-Active, Active-Passive)</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: CAP, Availability vs Consistency</span><span class="tc-tag tag-unlocks">→ Load Balancers, Replication</span></div>
+        </div>
+      </div>
+
+      <div class="divider">Exercises</div>
+      <div class="ex-block">
+        <div class="ex-level-label level-b">● Beginner</div>
+        <div class="ex-list">
+          <div class="ex-item">Draw a diagram comparing a single-server setup vs a 3-tier architecture. Label each layer and explain its role</div>
+          <div class="ex-item">Given 3 systems (Twitter, ATM, Google Docs), classify each as AP or CP under CAP theorem with justification</div>
+          <div class="ex-item">Calculate availability SLA for two services in sequence (99.9% × 99.9%) vs in parallel. Explain the math</div>
+        </div>
+      </div>
+      <div class="ex-block">
+        <div class="ex-level-label level-i">● Intermediate</div>
+        <div class="ex-list">
+          <div class="ex-item">Design a fail-over setup for a banking API: choose Active-Active vs Active-Passive and defend the choice with tradeoffs</div>
+          <div class="ex-item">Compare eventual consistency vs strong consistency for a shopping cart: write out what happens during a network partition in each case</div>
+          <div class="ex-item">Map 5 real systems (Cassandra, DynamoDB, PostgreSQL, Zookeeper, Redis) to their CAP positions and explain why</div>
+        </div>
+      </div>
+      <div class="ex-block">
+        <div class="ex-level-label level-a">● Advanced</div>
+        <div class="ex-list">
+          <div class="ex-item">Design an availability strategy for a system requiring 99.99% uptime: define redundancy at every layer, calculate composite SLA</div>
+          <div class="ex-item">Write a 1-page architecture decision record (ADR) choosing between AP and CP for a ride-sharing location tracking service</div>
+        </div>
+      </div>
+
+      <div class="divider">Milestone Project 1</div>
+      <div class="project-card" style="--stripe: var(--p1);">
+        <div style="position:absolute;top:0;left:0;right:0;height:4px;background:var(--p1);"></div>
+        <div class="proj-ms">Milestone 01 — After Topics 01–08</div>
+        <div class="proj-name">System Design Interview Framework Document</div>
+        <div class="proj-desc">Build your personal SD interview playbook. For 5 well-known systems (URL shortener, Twitter feed, WhatsApp, Netflix, Google Drive), document: requirements clarification questions, scale estimates, consistency model choice, availability pattern choice, and high-level architecture diagram. This is your interview cheat-sheet built from first principles.</div>
+        <div class="proj-meta">
+          <span class="proj-chip"><strong>Uses:</strong> All Phase 1 topics</span>
+          <span class="proj-chip"><strong>Output:</strong> 5-system design doc + diagrams</span>
+          <span class="proj-chip"><strong>Difficulty:</strong> Beginner → Intermediate</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== PHASE 2 ====== -->
+  <div class="phase" id="p2">
+    <div class="phase-header p2h" onclick="togglePhase(this)">
+      <div class="phase-num-block">
+        <div class="phase-num-label">Phase</div>
+        <div class="phase-num">02</div>
+      </div>
+      <div class="phase-title-block">
+        <div class="phase-title">Networking, DNS, CDN & Load Balancing</div>
+        <div class="phase-subtitle">9 topics — Traffic management from edge to server</div>
+      </div>
+      <div class="phase-toggle-block"><span class="phase-toggle">▾</span></div>
+    </div>
+    <div class="phase-body">
+      <div class="divider">Topics</div>
+      <div class="topic-grid">
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p2)"></div>
+          <div class="tc-num">09</div><div class="tc-name">HTTP, TCP, UDP</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Phase 1</span><span class="tc-tag tag-par">parallel: DNS</span><span class="tc-tag tag-unlocks">→ REST, gRPC, Load Balancers</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p2)"></div>
+          <div class="tc-num">10</div><div class="tc-name">Domain Name System (DNS)</div>
+          <div class="tc-tags"><span class="tc-tag tag-par">parallel: HTTP/TCP</span><span class="tc-tag tag-unlocks">→ CDN, Load Balancing</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p2)"></div>
+          <div class="tc-num">11</div><div class="tc-name">Content Delivery Networks (Push vs Pull CDN)</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: DNS, HTTP</span><span class="tc-tag tag-unlocks">→ Caching, Latency optimization</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p2)"></div>
+          <div class="tc-num">12</div><div class="tc-name">Load Balancers (Layer 4 vs Layer 7)</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: HTTP/TCP/UDP</span><span class="tc-tag tag-unlocks">→ Horizontal Scaling, Microservices</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p2)"></div>
+          <div class="tc-num">13</div><div class="tc-name">Load Balancing Algorithms (Round Robin, Least Conn, IP Hash)</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Load Balancers</span><span class="tc-tag tag-unlocks">→ Session stickiness design</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p2)"></div>
+          <div class="tc-num">14</div><div class="tc-name">Reverse Proxy vs Load Balancer</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Load Balancers</span><span class="tc-tag tag-par">parallel: LB algorithms</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p2)"></div>
+          <div class="tc-num">15</div><div class="tc-name">Communication — REST, RPC, gRPC, GraphQL</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: HTTP, TCP basics</span><span class="tc-tag tag-unlocks">→ Microservices, API design</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p2)"></div>
+          <div class="tc-num">16</div><div class="tc-name">Idempotent Operations</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: REST/RPC</span><span class="tc-tag tag-unlocks">→ Retry patterns, Reliability</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p2)"></div>
+          <div class="tc-num">17</div><div class="tc-name">Horizontal Scaling</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Load Balancers</span><span class="tc-tag tag-unlocks">→ Application Layer, Microservices</span></div>
+        </div>
+      </div>
+
+      <div class="divider">Exercises</div>
+      <div class="ex-block">
+        <div class="ex-level-label level-b">● Beginner</div>
+        <div class="ex-list">
+          <div class="ex-item">Explain what happens step-by-step when you type "google.com" in a browser: DNS resolution → TCP handshake → HTTP request → response</div>
+          <div class="ex-item">Compare Push CDN vs Pull CDN: write 3 use cases where each is the right choice</div>
+          <div class="ex-item">Design a REST API for a URL shortener: define endpoints, HTTP methods, status codes, idempotency guarantees</div>
+        </div>
+      </div>
+      <div class="ex-block">
+        <div class="ex-level-label level-i">● Intermediate</div>
+        <div class="ex-list">
+          <div class="ex-item">Compare Round Robin vs IP Hash load balancing for a stateful chat application: which breaks, why, and how to fix it</div>
+          <div class="ex-item">Design a Layer 7 LB config for an e-commerce site: route /api/* to backend cluster, /static/* to CDN, /admin/* to restricted pool</div>
+          <div class="ex-item">When to use gRPC vs REST vs GraphQL: build a decision matrix for 4 different service types (mobile client, internal microservice, public API, real-time stream)</div>
+        </div>
+      </div>
+      <div class="ex-block">
+        <div class="ex-level-label level-a">● Advanced</div>
+        <div class="ex-list">
+          <div class="ex-item">Design the full networking layer for a globally distributed system: DNS routing policies, multi-region CDN, L4+L7 LB chain, health checks</div>
+          <div class="ex-item">Implement a retry mechanism in code with exponential backoff + jitter for an idempotent HTTP API call</div>
+        </div>
+      </div>
+
+      <div class="divider">Milestone Project 2</div>
+      <div class="project-card">
+        <div style="position:absolute;top:0;left:0;right:0;height:4px;background:var(--p2);"></div>
+        <div class="proj-ms">Milestone 02 — After Topics 09–17</div>
+        <div class="proj-name">High-Traffic URL Shortener Architecture</div>
+        <div class="proj-desc">Design a URL shortener (like bit.ly) handling 100M redirects/day. Define: DNS setup, CDN for redirect caching, L7 load balancer config, horizontal scaling strategy, REST API design with idempotent endpoints. Draw the full traffic flow diagram from user click to redirect.</div>
+        <div class="proj-meta">
+          <span class="proj-chip"><strong>Uses:</strong> DNS, CDN, LB, REST, Horizontal Scaling</span>
+          <span class="proj-chip"><strong>Output:</strong> Architecture diagram + API spec</span>
+          <span class="proj-chip"><strong>Difficulty:</strong> Intermediate</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== PHASE 3 ====== -->
+  <div class="phase" id="p3">
+    <div class="phase-header p3h" onclick="togglePhase(this)">
+      <div class="phase-num-block">
+        <div class="phase-num-label">Phase</div>
+        <div class="phase-num">03</div>
+      </div>
+      <div class="phase-title-block">
+        <div class="phase-title">Database Design & Storage</div>
+        <div class="phase-subtitle">10 topics — SQL, NoSQL, Replication, Sharding</div>
+      </div>
+      <div class="phase-toggle-block"><span class="phase-toggle">▾</span></div>
+    </div>
+    <div class="phase-body">
+      <div class="divider">Topics</div>
+      <div class="topic-grid">
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p3)"></div>
+          <div class="tc-num">18</div><div class="tc-name">SQL vs NoSQL</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: CAP Theorem</span><span class="tc-tag tag-unlocks">→ All DB types</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p3)"></div>
+          <div class="tc-num">19</div><div class="tc-name">RDBMS & SQL Tuning</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: SQL vs NoSQL</span><span class="tc-tag tag-unlocks">→ Federation, Denormalization</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p3)"></div>
+          <div class="tc-num">20</div><div class="tc-name">Database Replication (Master-Slave, Master-Master)</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: SQL, Availability Patterns</span><span class="tc-tag tag-unlocks">→ Consistency tradeoffs</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p3)"></div>
+          <div class="tc-num">21</div><div class="tc-name">Database Sharding</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Replication</span><span class="tc-tag tag-unlocks">→ Horizontal DB scaling</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p3)"></div>
+          <div class="tc-num">22</div><div class="tc-name">Federation</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Sharding concepts</span><span class="tc-tag tag-par">parallel: Denormalization</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p3)"></div>
+          <div class="tc-num">23</div><div class="tc-name">Denormalization</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: SQL Tuning</span><span class="tc-tag tag-par">parallel: Federation</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p3)"></div>
+          <div class="tc-num">24</div><div class="tc-name">Key-Value Store (Redis, DynamoDB)</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: SQL vs NoSQL</span><span class="tc-tag tag-unlocks">→ Caching layer design</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p3)"></div>
+          <div class="tc-num">25</div><div class="tc-name">Document Store (MongoDB, Couchbase)</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: SQL vs NoSQL</span><span class="tc-tag tag-par">parallel: Key-Value Store</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p3)"></div>
+          <div class="tc-num">26</div><div class="tc-name">Wide Column Store (Cassandra, HBase)</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: SQL vs NoSQL, CAP</span><span class="tc-tag tag-par">parallel: Document Store</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p3)"></div>
+          <div class="tc-num">27</div><div class="tc-name">Graph Databases (Neo4j)</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: SQL vs NoSQL</span><span class="tc-tag tag-unlocks">→ Social graph systems</span></div>
+        </div>
+      </div>
+
+      <div class="divider">Exercises</div>
+      <div class="ex-block">
+        <div class="ex-level-label level-b">● Beginner</div>
+        <div class="ex-list">
+          <div class="ex-item">Given 5 use cases (user profiles, product catalog, analytics events, social graph, session data), pick the best DB type for each and justify it</div>
+          <div class="ex-item">Draw Master-Slave replication: mark where reads go, where writes go, what happens on master failure</div>
+          <div class="ex-item">Shard a users table by user_id: define shard key, describe what happens for range queries and hotspot users</div>
+        </div>
+      </div>
+      <div class="ex-block">
+        <div class="ex-level-label level-i">● Intermediate</div>
+        <div class="ex-list">
+          <div class="ex-item">Design the database layer for Twitter: which tables use SQL, which use Cassandra (wide-column), which use Redis, and why</div>
+          <div class="ex-item">Compare Master-Master vs Master-Slave for a write-heavy fintech app: show the conflict resolution problem in Master-Master</div>
+          <div class="ex-item">Write 3 SQL query optimizations for a slow JOIN query: index selection, denormalization, query rewrite</div>
+        </div>
+      </div>
+      <div class="ex-block">
+        <div class="ex-level-label level-a">● Advanced</div>
+        <div class="ex-list">
+          <div class="ex-item">Design a multi-region database architecture for a SaaS product: choose replication topology, shard strategy, failover plan, consistency model per operation type</div>
+          <div class="ex-item">Model a LinkedIn-style social graph in Neo4j: define node types, relationships, and write Cypher queries for 2nd-degree connections</div>
+        </div>
+      </div>
+
+      <div class="divider">Milestone Projects</div>
+      <div class="project-card">
+        <div style="position:absolute;top:0;left:0;right:0;height:4px;background:var(--p3);"></div>
+        <div class="proj-ms">Milestone 03 — After Topics 18–27</div>
+        <div class="proj-name">Multi-DB Architecture for E-Commerce Platform</div>
+        <div class="proj-desc">Design the complete data layer for an e-commerce platform: PostgreSQL (sharded) for orders/inventory, MongoDB for product catalog, Redis for sessions/cart, Cassandra for clickstream analytics, Neo4j for recommendation graph. Document data flow, replication setup, and failure scenarios for each.</div>
+        <div class="proj-meta">
+          <span class="proj-chip"><strong>Uses:</strong> All DB types, Sharding, Replication, Normalization</span>
+          <span class="proj-chip"><strong>Output:</strong> DB design doc + schema diagrams</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== PHASE 4 ====== -->
+  <div class="phase" id="p4">
+    <div class="phase-header p4h" onclick="togglePhase(this)">
+      <div class="phase-num-block">
+        <div class="phase-num-label">Phase</div>
+        <div class="phase-num">04</div>
+      </div>
+      <div class="phase-title-block">
+        <div class="phase-title">Caching, Asynchronism & Background Jobs</div>
+        <div class="phase-subtitle">10 topics — Speed and decoupling</div>
+      </div>
+      <div class="phase-toggle-block"><span class="phase-toggle">▾</span></div>
+    </div>
+    <div class="phase-body">
+      <div class="divider">Topics</div>
+      <div class="topic-grid">
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p4)"></div>
+          <div class="tc-num">28</div><div class="tc-name">Caching Types (Client, CDN, Web Server, DB, App)</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Consistency Patterns, DB Layer</span><span class="tc-tag tag-unlocks">→ Cache strategies</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p4)"></div>
+          <div class="tc-num">29</div><div class="tc-name">Cache-Aside Strategy</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Caching Types</span><span class="tc-tag tag-par">parallel: Write-through</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p4)"></div>
+          <div class="tc-num">30</div><div class="tc-name">Write-Through & Write-Behind</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Caching Types</span><span class="tc-tag tag-par">parallel: Cache-Aside, Refresh-Ahead</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p4)"></div>
+          <div class="tc-num">31</div><div class="tc-name">Refresh-Ahead Strategy</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Write-Through</span><span class="tc-tag tag-par">parallel: Write-Behind</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p4)"></div>
+          <div class="tc-num">32</div><div class="tc-name">Message Queues (RabbitMQ, SQS)</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Phase 2, Consistency patterns</span><span class="tc-tag tag-unlocks">→ Async workflows</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p4)"></div>
+          <div class="tc-num">33</div><div class="tc-name">Task Queues (Celery, Bull)</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Message Queues</span><span class="tc-tag tag-par">parallel: Back Pressure</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p4)"></div>
+          <div class="tc-num">34</div><div class="tc-name">Back Pressure</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Message/Task Queues</span><span class="tc-tag tag-unlocks">→ Reliability under load</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p4)"></div>
+          <div class="tc-num">35</div><div class="tc-name">Background Jobs (Event-Driven vs Schedule-Driven)</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Task Queues</span><span class="tc-tag tag-unlocks">→ Async result returning</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p4)"></div>
+          <div class="tc-num">36</div><div class="tc-name">Async Request-Reply Pattern</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Message Queues, Background Jobs</span><span class="tc-tag tag-unlocks">→ Cloud messaging patterns</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p4)"></div>
+          <div class="tc-num">37</div><div class="tc-name">Performance Antipatterns (Busy DB, Chatty I/O, No Caching, Retry Storm, etc.)</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Caching + Async topics</span><span class="tc-tag tag-unlocks">→ Production-grade architecture</span></div>
+        </div>
+      </div>
+
+      <div class="divider">Exercises</div>
+      <div class="ex-block">
+        <div class="ex-level-label level-b">● Beginner</div>
+        <div class="ex-list">
+          <div class="ex-item">Implement Cache-Aside in Python/Java: cache miss → DB fetch → cache write → return. Add TTL and eviction logging</div>
+          <div class="ex-item">Identify which of the 9 performance antipatterns exist in a given slow API endpoint pseudocode</div>
+          <div class="ex-item">Design a notification system using a task queue: user action → queue job → async email/push send</div>
+        </div>
+      </div>
+      <div class="ex-block">
+        <div class="ex-level-label level-i">● Intermediate</div>
+        <div class="ex-list">
+          <div class="ex-item">Compare Write-Through vs Write-Behind for a high-write leaderboard system: show data loss risk and latency tradeoffs of each</div>
+          <div class="ex-item">Implement back-pressure in a queue consumer: when queue depth exceeds threshold, reject new publishes with 429 and trigger alert</div>
+          <div class="ex-item">Design the async job system for a video upload platform: queue, worker pool, progress polling, failure retry with DLQ</div>
+        </div>
+      </div>
+      <div class="ex-block">
+        <div class="ex-level-label level-a">● Advanced</div>
+        <div class="ex-list">
+          <div class="ex-item">Design a distributed cache layer for a multi-region app: local cache → regional Redis cluster → origin DB, with cache invalidation strategy on writes</div>
+          <div class="ex-item">Fix a "retry storm" antipattern: implement exponential backoff + jitter + circuit breaker to prevent cascading failures</div>
+        </div>
+      </div>
+
+      <div class="divider">Milestone Project 4</div>
+      <div class="project-card">
+        <div style="position:absolute;top:0;left:0;right:0;height:4px;background:var(--p4);"></div>
+        <div class="proj-ms">Milestone 04 — After Topics 28–37</div>
+        <div class="proj-name">Async Order Processing System (like Swiggy/Zomato)</div>
+        <div class="proj-desc">Design and partially implement an async food order processing system: REST API receives order → publishes to message queue → worker processes payment → task queue sends notifications → Redis caches order status. Include retry logic, DLQ, back pressure, and a Cache-Aside layer for order lookups. Document which antipatterns you intentionally avoided.</div>
+        <div class="proj-meta">
+          <span class="proj-chip"><strong>Uses:</strong> Caching strategies, MQ, Task Queue, Back Pressure, Async patterns</span>
+          <span class="proj-chip"><strong>Output:</strong> Working code + architecture diagram</span>
+          <span class="proj-chip"><strong>Difficulty:</strong> Intermediate → Advanced</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== PHASE 5 ====== -->
+  <div class="phase" id="p5">
+    <div class="phase-header p5h" onclick="togglePhase(this)">
+      <div class="phase-num-block">
+        <div class="phase-num-label">Phase</div>
+        <div class="phase-num">05</div>
+      </div>
+      <div class="phase-title-block">
+        <div class="phase-title">Application Layer & Microservices</div>
+        <div class="phase-subtitle">5 topics — Service architecture at scale</div>
+      </div>
+      <div class="phase-toggle-block"><span class="phase-toggle">▾</span></div>
+    </div>
+    <div class="phase-body">
+      <div class="divider">Topics</div>
+      <div class="topic-grid">
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p5)"></div>
+          <div class="tc-num">38</div><div class="tc-name">Application Layer (Separation of Concerns)</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Phase 2+3</span><span class="tc-tag tag-unlocks">→ Microservices</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p5)"></div>
+          <div class="tc-num">39</div><div class="tc-name">Microservices Architecture</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Application Layer, LB</span><span class="tc-tag tag-unlocks">→ Service Discovery, API Gateway</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p5)"></div>
+          <div class="tc-num">40</div><div class="tc-name">Service Discovery</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Microservices</span><span class="tc-tag tag-par">parallel: Backends for Frontend</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p5)"></div>
+          <div class="tc-num">41</div><div class="tc-name">Backends for Frontend (BFF) Pattern</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Microservices, REST/GraphQL</span><span class="tc-tag tag-par">parallel: Service Discovery</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p5)"></div>
+          <div class="tc-num">42</div><div class="tc-name">Gateway Patterns (Routing, Offloading, Aggregation)</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Microservices, BFF</span><span class="tc-tag tag-unlocks">→ External Config Store, Sidecar</span></div>
+        </div>
+      </div>
+
+      <div class="divider">Exercises</div>
+      <div class="ex-block">
+        <div class="ex-level-label level-b">● Beginner</div>
+        <div class="ex-list">
+          <div class="ex-item">Take a monolith user service and split it into 3 microservices: define boundaries, contracts (API), and data ownership rules</div>
+          <div class="ex-item">Compare client-side vs server-side service discovery: draw sequence diagrams for both approaches</div>
+        </div>
+      </div>
+      <div class="ex-block">
+        <div class="ex-level-label level-i">● Intermediate</div>
+        <div class="ex-list">
+          <div class="ex-item">Design a BFF for a super-app (mobile + web + partner API): 3 separate gateways, different response shapes, shared backend services</div>
+          <div class="ex-item">Design an API Gateway with rate limiting, auth offloading, request aggregation, and circuit breaker for a 10-service mesh</div>
+        </div>
+      </div>
+      <div class="ex-block">
+        <div class="ex-level-label level-a">● Advanced</div>
+        <div class="ex-list">
+          <div class="ex-item">Design a service mesh for 15 microservices using Istio/Envoy: define sidecar config, mTLS, traffic policies, and observability setup</div>
+        </div>
+      </div>
+
+      <div class="divider">Milestone Project 5</div>
+      <div class="project-card">
+        <div style="position:absolute;top:0;left:0;right:0;height:4px;background:var(--p5);"></div>
+        <div class="proj-ms">Milestone 05 — After Topics 38–42</div>
+        <div class="proj-name">Microservices Architecture for Evenzo Platform</div>
+        <div class="proj-desc">Refactor or re-architect Evenzo's backend as a microservices system: User Service, Event Service, Notification Service, Payment Service. Add API Gateway with auth offloading, rate limiting. Implement service discovery. Create a BFF for the mobile app vs web dashboard. Document inter-service communication contracts.</div>
+        <div class="proj-meta">
+          <span class="proj-chip"><strong>Uses:</strong> Microservices, Gateway, BFF, Service Discovery</span>
+          <span class="proj-chip"><strong>Output:</strong> Architecture doc + service contracts</span>
+          <span class="proj-chip"><strong>Boaringseed Relevance:</strong> Direct product application</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== PHASE 6 ====== -->
+  <div class="phase" id="p6">
+    <div class="phase-header p6h" onclick="togglePhase(this)">
+      <div class="phase-num-block">
+        <div class="phase-num-label">Phase</div>
+        <div class="phase-num">06</div>
+      </div>
+      <div class="phase-title-block">
+        <div class="phase-title">Cloud Design Patterns & Data Management</div>
+        <div class="phase-subtitle">12 topics — Production cloud architecture patterns</div>
+      </div>
+      <div class="phase-toggle-block"><span class="phase-toggle">▾</span></div>
+    </div>
+    <div class="phase-body">
+      <div class="divider">Topics</div>
+      <div class="topic-grid">
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p6)"></div>
+          <div class="tc-num">43</div><div class="tc-name">Publisher/Subscriber Pattern</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Message Queues</span><span class="tc-tag tag-par">parallel: Competing Consumers</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p6)"></div>
+          <div class="tc-num">44</div><div class="tc-name">Competing Consumers</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Pub/Sub</span><span class="tc-tag tag-par">parallel: Priority Queue</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p6)"></div>
+          <div class="tc-num">45</div><div class="tc-name">Priority Queue & Queue-Based Load Leveling</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Task Queues, Back Pressure</span><span class="tc-tag tag-unlocks">→ Throttling</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p6)"></div>
+          <div class="tc-num">46</div><div class="tc-name">Event Sourcing</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: DB Layer, Consistency Patterns</span><span class="tc-tag tag-unlocks">→ CQRS</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p6)"></div>
+          <div class="tc-num">47</div><div class="tc-name">CQRS (Command Query Responsibility Segregation)</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Event Sourcing</span><span class="tc-tag tag-unlocks">→ Materialized View</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p6)"></div>
+          <div class="tc-num">48</div><div class="tc-name">Materialized View & Index Table</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: CQRS, DB Sharding</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p6)"></div>
+          <div class="tc-num">49</div><div class="tc-name">Sidecar, Ambassador, Anti-Corruption Layer</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Microservices</span><span class="tc-tag tag-par">parallel: Strangler Fig</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p6)"></div>
+          <div class="tc-num">50</div><div class="tc-name">Strangler Fig Pattern</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Microservices, Gateway</span><span class="tc-tag tag-unlocks">→ Legacy migration</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p6)"></div>
+          <div class="tc-num">51</div><div class="tc-name">Claim Check, Choreography, Pipes & Filters</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Pub/Sub, Event Sourcing</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p6)"></div>
+          <div class="tc-num">52</div><div class="tc-name">External Config Store & Compute Resource Consolidation</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Microservices, Cloud patterns intro</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p6)"></div>
+          <div class="tc-num">53</div><div class="tc-name">Deployment Stamps & Geodes</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Horizontal Scaling, Multi-region concepts</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p6)"></div>
+          <div class="tc-num">54</div><div class="tc-name">Valet Key, Static Content Hosting</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: CDN, Security basics</span><span class="tc-tag tag-par">parallel: Federated Identity</span></div>
+        </div>
+      </div>
+
+      <div class="divider">Exercises</div>
+      <div class="ex-block">
+        <div class="ex-level-label level-b">● Beginner</div>
+        <div class="ex-list">
+          <div class="ex-item">Implement a basic Pub/Sub system in Python: publisher emits events, 2 independent subscribers consume them with different logic</div>
+          <div class="ex-item">Model an event-sourced bank account: define events (Deposit, Withdraw, Transfer), replay them to get current balance</div>
+        </div>
+      </div>
+      <div class="ex-block">
+        <div class="ex-level-label level-i">● Intermediate</div>
+        <div class="ex-list">
+          <div class="ex-item">Design a CQRS system for an inventory service: separate write model (commands) from read model (queries), show how Materialized View is updated</div>
+          <div class="ex-item">Apply Strangler Fig to migrate a legacy monolith payment service to microservices: define the strangling sequence, routing proxy, and rollback plan</div>
+          <div class="ex-item">Design a multi-tenant SaaS deployment using Deployment Stamps: isolated per-tenant infrastructure vs shared with tenant routing</div>
+        </div>
+      </div>
+      <div class="ex-block">
+        <div class="ex-level-label level-a">● Advanced</div>
+        <div class="ex-list">
+          <div class="ex-item">Design a fully event-sourced order management system with CQRS, Event Store, Saga orchestration for distributed transactions, and materialized read models</div>
+        </div>
+      </div>
+
+      <div class="divider">Milestone Projects</div>
+      <div class="project-card">
+        <div style="position:absolute;top:0;left:0;right:0;height:4px;background:var(--p6);"></div>
+        <div class="proj-ms">Milestone 06 — After Topics 43–54</div>
+        <div class="proj-name">Event-Sourced Inventory & Order System</div>
+        <div class="proj-desc">Build a CQRS + Event Sourcing inventory system: commands (CreateOrder, UpdateStock) write to event store, projections build read models, Pub/Sub notifies downstream services. Implement Competing Consumers for order processing workers. Document the Saga pattern for distributed transaction rollback.</div>
+        <div class="proj-meta">
+          <span class="proj-chip"><strong>Uses:</strong> Event Sourcing, CQRS, Pub/Sub, Competing Consumers, Materialized View</span>
+          <span class="proj-chip"><strong>Output:</strong> Working implementation + event flow diagram</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== PHASE 7 ====== -->
+  <div class="phase" id="p7">
+    <div class="phase-header p7h" onclick="togglePhase(this)">
+      <div class="phase-num-block">
+        <div class="phase-num-label">Phase</div>
+        <div class="phase-num">07</div>
+      </div>
+      <div class="phase-title-block">
+        <div class="phase-title">Reliability, Monitoring & Security</div>
+        <div class="phase-subtitle">10 topics — Production-grade systems that don't break</div>
+      </div>
+      <div class="phase-toggle-block"><span class="phase-toggle">▾</span></div>
+    </div>
+    <div class="phase-body">
+      <div class="divider">Topics</div>
+      <div class="topic-grid">
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p7)"></div>
+          <div class="tc-num">55</div><div class="tc-name">Circuit Breaker</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Microservices, Retry patterns</span><span class="tc-tag tag-par">parallel: Bulkhead</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p7)"></div>
+          <div class="tc-num">56</div><div class="tc-name">Bulkhead Pattern</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Microservices</span><span class="tc-tag tag-par">parallel: Circuit Breaker</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p7)"></div>
+          <div class="tc-num">57</div><div class="tc-name">Retry & Compensating Transaction</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Idempotent Ops, Async patterns</span><span class="tc-tag tag-unlocks">→ Saga pattern</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p7)"></div>
+          <div class="tc-num">58</div><div class="tc-name">Throttling</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Queue-Based Load Leveling</span><span class="tc-tag tag-par">parallel: Circuit Breaker</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p7)"></div>
+          <div class="tc-num">59</div><div class="tc-name">Leader Election</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Distributed systems concepts, CAP</span><span class="tc-tag tag-unlocks">→ Scheduler Agent Supervisor</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p7)"></div>
+          <div class="tc-num">60</div><div class="tc-name">Scheduler Agent Supervisor</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Leader Election, Background Jobs</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p7)"></div>
+          <div class="tc-num">61</div><div class="tc-name">Health, Availability, Performance & Security Monitoring</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Microservices, Application Layer</span><span class="tc-tag tag-unlocks">→ Alerting, SLO definition</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p7)"></div>
+          <div class="tc-num">62</div><div class="tc-name">Instrumentation & Visualization (Prometheus, Grafana)</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Monitoring concepts</span><span class="tc-tag tag-unlocks">→ Alerting pipelines</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p7)"></div>
+          <div class="tc-num">63</div><div class="tc-name">Federated Identity & Gatekeeper</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Gateway Patterns, API design</span><span class="tc-tag tag-par">parallel: Valet Key</span></div>
+        </div>
+        <div class="topic-card"><div class="phase-stripe" style="background:var(--p7)"></div>
+          <div class="tc-num">64</div><div class="tc-name">Health Endpoint Monitoring Pattern</div>
+          <div class="tc-tags"><span class="tc-tag tag-req">after: Monitoring, Microservices</span><span class="tc-tag tag-par">parallel: Circuit Breaker</span></div>
+        </div>
+      </div>
+
+      <div class="divider">Exercises</div>
+      <div class="ex-block">
+        <div class="ex-level-label level-b">● Beginner</div>
+        <div class="ex-list">
+          <div class="ex-item">Implement Circuit Breaker in Python/Java with 3 states (Closed, Open, Half-Open), test with a failing downstream mock</div>
+          <div class="ex-item">Add /health and /ready endpoints to a FastAPI service: check DB connectivity, cache availability, return structured JSON status</div>
+          <div class="ex-item">Define 3 SLOs for a production API: latency P99, error rate, availability — calculate corresponding error budgets</div>
+        </div>
+      </div>
+      <div class="ex-block">
+        <div class="ex-level-label level-i">● Intermediate</div>
+        <div class="ex-list">
+          <div class="ex-item">Instrument a FastAPI service with Prometheus metrics: request count, latency histogram, error rate. Wire to Grafana dashboard</div>
+          <div class="ex-item">Design a rate limiter: token bucket algorithm in Redis for API throttling, 100 req/min per user, return 429 with Retry-After header</div>
+          <div class="ex-item">Implement Bulkhead: isolate DB pool for critical vs non-critical service operations, test that non-critical pool exhaustion doesn't kill critical path</div>
+        </div>
+      </div>
+      <div class="ex-block">
+        <div class="ex-level-label level-a">● Advanced</div>
+        <div class="ex-list">
+          <div class="ex-item">Design a full observability stack: structured logging (ELK), distributed tracing (Jaeger), metrics (Prometheus/Grafana), alerting rules for SLO breaches</div>
+          <div class="ex-item">Implement Compensating Transaction for a 3-step distributed payment saga: define rollback logic for each step failure</div>
+        </div>
+      </div>
+
+      <div class="divider">Milestone Projects — Final</div>
+      <div class="project-card">
+        <div style="position:absolute;top:0;left:0;right:0;height:4px;background:var(--p7);"></div>
+        <div class="proj-ms">Milestone 07 — After Topics 55–64</div>
+        <div class="proj-name">Production-Grade Resilient API Service</div>
+        <div class="proj-desc">Take any of your previous project APIs and harden it for production: add Circuit Breaker + Bulkhead on external calls, rate limiting (token bucket), Retry with exponential backoff, health/ready endpoints, Prometheus metrics, Grafana dashboard with 3 alert rules. This is your reliability engineering showcase.</div>
+        <div class="proj-meta">
+          <span class="proj-chip"><strong>Uses:</strong> All Phase 7 patterns</span>
+          <span class="proj-chip"><strong>Output:</strong> Hardened service + monitoring dashboard</span>
+        </div>
+      </div>
+      <div class="project-card">
+        <div style="position:absolute;top:0;left:0;right:0;height:4px;background:var(--p1);"></div>
+        <div class="proj-ms">Milestone 08 — Capstone</div>
+        <div class="proj-name">Full System Design: Boaringseed SaaS Platform Architecture</div>
+        <div class="proj-desc">Design the complete production architecture for a Boaringseed multi-tenant SaaS product (Evenzo or similar): DNS + CDN + Load Balancer → API Gateway + Auth → Microservices mesh → Multi-DB layer → Caching → Async job system → Event sourcing for audit log → Monitoring stack → Security layer. Every topic from every phase must appear. This is your client-facing architecture consulting portfolio piece.</div>
+        <div class="proj-meta">
+          <span class="proj-chip"><strong>Uses:</strong> ALL 64 topics across 7 phases</span>
+          <span class="proj-chip"><strong>Output:</strong> Full architecture doc + diagrams + ADRs</span>
+          <span class="proj-chip"><strong>Purpose:</strong> Boaringseed client pitch + FAANG interview prep</span>
+          <span class="proj-chip"><strong>Difficulty:</strong> Production-grade</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== QUICK REF ====== -->
+  <div class="phase" id="ref">
+    <div class="phase-header p2h" onclick="togglePhase(this)">
+      <div class="phase-num-block">
+        <div class="phase-num-label">Ref</div>
+        <div class="phase-num" style="font-size:24px;padding-top:4px;">TABLE</div>
+      </div>
+      <div class="phase-title-block">
+        <div class="phase-title">All 64 Topics — Sequential vs Parallel Quick Reference</div>
+        <div class="phase-subtitle">What must come before, what runs in parallel</div>
+      </div>
+      <div class="phase-toggle-block"><span class="phase-toggle">▾</span></div>
+    </div>
+    <div class="phase-body">
+      <table class="ref-table">
+        <thead>
+          <tr><th>#</th><th>Topic</th><th>Requires First</th><th>Can Run Parallel With</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>01</td><td>What is System Design?</td><td>None</td><td>All basics</td></tr>
+          <tr><td>02</td><td>How to Approach SD</td><td>Topic 01</td><td>—</td></tr>
+          <tr><td>03</td><td>Performance vs Scalability</td><td>Topic 01</td><td>04, 05</td></tr>
+          <tr><td>04</td><td>Latency vs Throughput</td><td>Topic 01</td><td>03, 05</td></tr>
+          <tr><td>05</td><td>Availability vs Consistency</td><td>Topic 01</td><td>03, 04</td></tr>
+          <tr><td>06</td><td>CAP Theorem</td><td>Topic 05</td><td>—</td></tr>
+          <tr><td>07</td><td>Consistency Patterns</td><td>CAP Theorem</td><td>08</td></tr>
+          <tr><td>08</td><td>Availability Patterns</td><td>CAP, 05</td><td>07</td></tr>
+          <tr><td>09</td><td>HTTP, TCP, UDP</td><td>Phase 1</td><td>10</td></tr>
+          <tr><td>10</td><td>DNS</td><td>Phase 1</td><td>09</td></tr>
+          <tr><td>11</td><td>CDN (Push/Pull)</td><td>DNS, HTTP</td><td>12</td></tr>
+          <tr><td>12</td><td>Load Balancers (L4/L7)</td><td>HTTP, TCP</td><td>11</td></tr>
+          <tr><td>13</td><td>LB Algorithms</td><td>Load Balancers</td><td>14</td></tr>
+          <tr><td>14</td><td>Reverse Proxy vs LB</td><td>Load Balancers</td><td>13</td></tr>
+          <tr><td>15</td><td>REST, RPC, gRPC, GraphQL</td><td>HTTP basics</td><td>13, 14</td></tr>
+          <tr><td>16</td><td>Idempotent Operations</td><td>REST/RPC</td><td>—</td></tr>
+          <tr><td>17</td><td>Horizontal Scaling</td><td>Load Balancers</td><td>11</td></tr>
+          <tr><td>18</td><td>SQL vs NoSQL</td><td>CAP Theorem</td><td>—</td></tr>
+          <tr><td>19</td><td>RDBMS & SQL Tuning</td><td>SQL vs NoSQL</td><td>24, 25, 26</td></tr>
+          <tr><td>20</td><td>DB Replication</td><td>SQL, Availability Patterns</td><td>21</td></tr>
+          <tr><td>21</td><td>DB Sharding</td><td>Replication</td><td>22</td></tr>
+          <tr><td>22</td><td>Federation</td><td>Sharding</td><td>23</td></tr>
+          <tr><td>23</td><td>Denormalization</td><td>SQL Tuning</td><td>22</td></tr>
+          <tr><td>24</td><td>Key-Value Store</td><td>SQL vs NoSQL</td><td>25, 26, 27</td></tr>
+          <tr><td>25</td><td>Document Store</td><td>SQL vs NoSQL</td><td>24, 26, 27</td></tr>
+          <tr><td>26</td><td>Wide Column Store</td><td>SQL vs NoSQL, CAP</td><td>24, 25, 27</td></tr>
+          <tr><td>27</td><td>Graph Databases</td><td>SQL vs NoSQL</td><td>24, 25, 26</td></tr>
+          <tr><td>28</td><td>Caching Types</td><td>Consistency Patterns, DB Layer</td><td>32</td></tr>
+          <tr><td>29</td><td>Cache-Aside</td><td>Caching Types</td><td>30, 31</td></tr>
+          <tr><td>30</td><td>Write-Through, Write-Behind</td><td>Caching Types</td><td>29, 31</td></tr>
+          <tr><td>31</td><td>Refresh-Ahead</td><td>Write-Through</td><td>30</td></tr>
+          <tr><td>32</td><td>Message Queues</td><td>Phase 2, Consistency</td><td>28</td></tr>
+          <tr><td>33</td><td>Task Queues</td><td>Message Queues</td><td>34</td></tr>
+          <tr><td>34</td><td>Back Pressure</td><td>MQ, Task Queues</td><td>33</td></tr>
+          <tr><td>35</td><td>Background Jobs</td><td>Task Queues</td><td>36</td></tr>
+          <tr><td>36</td><td>Async Request-Reply</td><td>MQ, Background Jobs</td><td>35</td></tr>
+          <tr><td>37</td><td>Performance Antipatterns</td><td>Caching + Async</td><td>—</td></tr>
+          <tr><td>38</td><td>Application Layer</td><td>Phase 2+3</td><td>—</td></tr>
+          <tr><td>39</td><td>Microservices</td><td>Application Layer, LB</td><td>—</td></tr>
+          <tr><td>40</td><td>Service Discovery</td><td>Microservices</td><td>41</td></tr>
+          <tr><td>41</td><td>BFF Pattern</td><td>Microservices, REST/GraphQL</td><td>40</td></tr>
+          <tr><td>42</td><td>Gateway Patterns</td><td>Microservices, BFF</td><td>—</td></tr>
+          <tr><td>43</td><td>Publisher/Subscriber</td><td>Message Queues</td><td>44</td></tr>
+          <tr><td>44</td><td>Competing Consumers</td><td>Pub/Sub</td><td>45</td></tr>
+          <tr><td>45</td><td>Priority Queue + QLL</td><td>Task Queues, Back Pressure</td><td>44</td></tr>
+          <tr><td>46</td><td>Event Sourcing</td><td>DB Layer, Consistency Patterns</td><td>—</td></tr>
+          <tr><td>47</td><td>CQRS</td><td>Event Sourcing</td><td>—</td></tr>
+          <tr><td>48</td><td>Materialized View + Index Table</td><td>CQRS, DB Sharding</td><td>—</td></tr>
+          <tr><td>49</td><td>Sidecar, Ambassador, ACL</td><td>Microservices</td><td>50</td></tr>
+          <tr><td>50</td><td>Strangler Fig</td><td>Microservices, Gateway</td><td>49</td></tr>
+          <tr><td>51</td><td>Claim Check, Choreography, Pipes & Filters</td><td>Pub/Sub, Event Sourcing</td><td>—</td></tr>
+          <tr><td>52</td><td>External Config, Compute Consolidation</td><td>Microservices</td><td>—</td></tr>
+          <tr><td>53</td><td>Deployment Stamps & Geodes</td><td>Horizontal Scaling, Multi-region</td><td>—</td></tr>
+          <tr><td>54</td><td>Valet Key, Static Content Hosting</td><td>CDN, Security basics</td><td>63</td></tr>
+          <tr><td>55</td><td>Circuit Breaker</td><td>Microservices, Retry patterns</td><td>56</td></tr>
+          <tr><td>56</td><td>Bulkhead</td><td>Microservices</td><td>55</td></tr>
+          <tr><td>57</td><td>Retry & Compensating Transaction</td><td>Idempotent Ops</td><td>58</td></tr>
+          <tr><td>58</td><td>Throttling</td><td>Queue-Based Load Leveling</td><td>55</td></tr>
+          <tr><td>59</td><td>Leader Election</td><td>Distributed systems, CAP</td><td>—</td></tr>
+          <tr><td>60</td><td>Scheduler Agent Supervisor</td><td>Leader Election, BG Jobs</td><td>—</td></tr>
+          <tr><td>61</td><td>Monitoring (Health, Perf, Security)</td><td>Microservices, App Layer</td><td>62</td></tr>
+          <tr><td>62</td><td>Instrumentation & Visualization</td><td>Monitoring concepts</td><td>61</td></tr>
+          <tr><td>63</td><td>Federated Identity & Gatekeeper</td><td>Gateway Patterns</td><td>54</td></tr>
+          <tr><td>64</td><td>Health Endpoint Monitoring</td><td>Monitoring, Microservices</td><td>55</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    <span>System Design Mastery Plan — 64 Topics · 7 Phases · 8 Milestone Projects</span>
+    <span>Structured for Jay @ Boaringseed · FAANG + Consulting Ready</span>
+  </footer>
+
+</div>
+
+<script>
+  function togglePhase(header) {
+    header.closest('.phase').classList.toggle('collapsed');
+  }
+
+  const sections = document.querySelectorAll('.phase[id]');
+  const tabs = document.querySelectorAll('.nav-tab');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) current = s.id; });
+    tabs.forEach(t => {
+      t.classList.remove('active');
+      if (t.getAttribute('href') === '#' + current) t.classList.add('active');
+    });
+  });
+  tabs.forEach(t => t.addEventListener('click', function() {
+    tabs.forEach(x => x.classList.remove('active'));
+    this.classList.add('active');
+  }));
+</script>
+</body>
+</html>
