@@ -144,6 +144,64 @@
   .nav-tab:hover { color: var(--ink); background: var(--surface); }
   .nav-tab.active { color: var(--ink); border-bottom-color: var(--accent); background: var(--surface); }
 
+  .modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.hidden {
+  display: none;
+}
+
+/* dark background */
+.modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+}
+
+/* popup box */
+.modal-box {
+  position: relative;
+  background: white;
+  width: 90%;
+  max-width: 600px;
+  padding: 24px;
+  border-radius: 10px;
+  z-index: 2;
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: pop 0.25s ease;
+}
+
+/* animation */
+@keyframes pop {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* close button */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+
+
   /* PHASE BLOCK */
   .phase {
     margin: 40px 0;
@@ -428,8 +486,9 @@
   </nav>
 
   <div id="modal" class="modal hidden">
-    <div class="modal-content">
-      <span id="close">&times;</span>
+    <div class="modal-overlay"></div>
+    <div class="modal-box">
+      <span class="close-btn">&times;</span>
       <h2 id="m-title"></h2>
       <p id="m-desc"></p>
       <div id="m-table"></div>
@@ -1219,48 +1278,95 @@
     this.classList.add('active');
   }));
 
-  let DATA = {};
+  // ===== GLOBAL DATA =====
+let DATA = [];
 
+// ===== LOAD JSON =====
 fetch('data.json')
   .then(res => res.json())
-  .then(d => DATA = d.topics);
+  .then(d => {
+    DATA = d.topics;
+  })
+  .catch(err => console.error("JSON load error:", err));
 
-// click handler
+
+// ===== MODAL ELEMENTS =====
+const modal = document.getElementById('modal');
+const overlay = document.querySelector('.modal-overlay');
+const closeBtn = document.querySelector('.close-btn');
+
+const mTitle = document.getElementById('m-title');
+const mDesc = document.getElementById('m-desc');
+const mTable = document.getElementById('m-table');
+const mImages = document.getElementById('m-images');
+
+
+// ===== OPEN MODAL FUNCTION =====
+function openModal(topic) {
+  if (!topic) return;
+
+  // title + description
+  mTitle.innerText = topic.title || '';
+  mDesc.innerText = topic.description || '';
+
+  // ===== TABLE =====
+  if (topic.table && topic.table.length) {
+    let tableHTML = '<table border="1" cellpadding="6" cellspacing="0">';
+    
+    topic.table.forEach((row, i) => {
+      tableHTML += '<tr>';
+      row.forEach(cell => {
+        tableHTML += i === 0 
+          ? `<th>${cell}</th>` 
+          : `<td>${cell}</td>`;
+      });
+      tableHTML += '</tr>';
+    });
+
+    tableHTML += '</table>';
+    mTable.innerHTML = tableHTML;
+  } else {
+    mTable.innerHTML = '';
+  }
+
+  // ===== IMAGES =====
+  if (topic.images && topic.images.length) {
+    mImages.innerHTML = topic.images
+      .map(img => `<img src="${img}" style="width:100%;margin-top:10px;border-radius:6px;" />`)
+      .join('');
+  } else {
+    mImages.innerHTML = '';
+  }
+
+  // show modal
+  modal.classList.remove('hidden');
+}
+
+
+// ===== CLOSE MODAL =====
+function closeModal() {
+  modal.classList.add('hidden');
+}
+
+
+// ===== CLICK EVENTS FOR CARDS =====
 document.querySelectorAll('.topic-card').forEach(card => {
   card.addEventListener('click', () => {
     const key = card.dataset.key;
+
     const topic = DATA.find(t => t.key === key);
-
-    if (!topic) return;
-
-    // fill modal
-    document.getElementById('m-title').innerText = topic.title;
-    document.getElementById('m-desc').innerText = topic.description;
-
-    // table
-    let tableHTML = '';
-    if (topic.table.length) {
-      tableHTML += '<table>';
-      topic.table.forEach(row => {
-        tableHTML += `<tr>${row.map(c => `<td>${c}</td>`).join('')}</tr>`;
-      });
-      tableHTML += '</table>';
-    }
-    document.getElementById('m-table').innerHTML = tableHTML;
-
-    // images
-    let imgHTML = topic.images.map(img => `<img src="${img}" />`).join('');
-    document.getElementById('m-images').innerHTML = imgHTML;
-
-    // show modal
-    document.getElementById('modal').classList.remove('hidden');
+    openModal(topic);
   });
 });
 
-// close
-document.getElementById('close').onclick = () => {
-  document.getElementById('modal').classList.add('hidden');
-};
+
+// ===== CLOSE EVENTS =====
+closeBtn.onclick = closeModal;
+overlay.onclick = closeModal;
+
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
 
 
 </script>
