@@ -4,13 +4,9 @@
       "id": "01",
       "key": "WSD",
       "title": "What is System Design?",
-      "description": "System design is the process of designing scalable systems...",
-      "table": [
-        ["Concept", "Meaning"],
-        ["System", "Collection of components"],
-        ["Design", "Planning architecture"]
-      ],
-      "images": ["sys/img1.jpg"]
+      "description": "System Design is the process of planning and structuring how a software system works—how its parts fit together, communicate, and handle real-world requirements like users, data, and scale. Think of it like designing a city: you decide roads (communication), buildings (components), traffic flow (data), and how everything grows over time.",
+      "table": [],
+      "images": []
     },
     {
       "id": "02",
