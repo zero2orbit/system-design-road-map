@@ -427,6 +427,16 @@
     </div>
   </nav>
 
+  <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <span id="close">&times;</span>
+      <h2 id="m-title"></h2>
+      <p id="m-desc"></p>
+      <div id="m-table"></div>
+      <div id="m-images"></div>
+    </div>
+  </div>
+
   <!-- ====== PHASE 1 ====== -->
   <div class="phase" id="p1">
     <div class="phase-header p1h" onclick="togglePhase(this)">
@@ -443,7 +453,8 @@
     <div class="phase-body">
       <div class="divider">Topics</div>
       <div class="topic-grid">
-        <div class="topic-card"><div class="phase-stripe" style="background:var(--p1)"></div>
+        <div class="topic-card" data-key="WSD">
+          <div class="phase-stripe" style="background:var(--p1)"></div>
           <div class="tc-num">01</div><div class="tc-name">What is System Design?</div>
           <div class="tc-tags"><span class="tc-tag tag-par">parallel: all basics</span><span class="tc-tag tag-unlocks">→ Everything</span></div>
         </div>
@@ -1207,6 +1218,51 @@
     tabs.forEach(x => x.classList.remove('active'));
     this.classList.add('active');
   }));
+
+  let DATA = {};
+
+fetch('data.json')
+  .then(res => res.json())
+  .then(d => DATA = d.topics);
+
+// click handler
+document.querySelectorAll('.topic-card').forEach(card => {
+  card.addEventListener('click', () => {
+    const key = card.dataset.key;
+    const topic = DATA.find(t => t.key === key);
+
+    if (!topic) return;
+
+    // fill modal
+    document.getElementById('m-title').innerText = topic.title;
+    document.getElementById('m-desc').innerText = topic.description;
+
+    // table
+    let tableHTML = '';
+    if (topic.table.length) {
+      tableHTML += '<table>';
+      topic.table.forEach(row => {
+        tableHTML += `<tr>${row.map(c => `<td>${c}</td>`).join('')}</tr>`;
+      });
+      tableHTML += '</table>';
+    }
+    document.getElementById('m-table').innerHTML = tableHTML;
+
+    // images
+    let imgHTML = topic.images.map(img => `<img src="${img}" />`).join('');
+    document.getElementById('m-images').innerHTML = imgHTML;
+
+    // show modal
+    document.getElementById('modal').classList.remove('hidden');
+  });
+});
+
+// close
+document.getElementById('close').onclick = () => {
+  document.getElementById('modal').classList.add('hidden');
+};
+
+
 </script>
 </body>
 </html>

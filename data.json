@@ -1,0 +1,24 @@
+{
+  "topics": [
+    {
+      "id": "01",
+      "key": "WSD",
+      "title": "What is System Design?",
+      "description": "System design is the process of designing scalable systems...",
+      "table": [
+        ["Concept", "Meaning"],
+        ["System", "Collection of components"],
+        ["Design", "Planning architecture"]
+      ],
+      "images": ["sys/img1.jpg"]
+    },
+    {
+      "id": "02",
+      "key": "HSD",
+      "title": "How to Approach System Design",
+      "description": "Step-by-step approach...",
+      "table": [],
+      "images": []
+    }
+  ]
+}
