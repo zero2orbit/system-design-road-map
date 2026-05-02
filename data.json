@@ -4,17 +4,193 @@
       "id": "01",
       "key": "WSD",
       "title": "What is System Design?",
-      "description": "System Design is the process of planning and structuring how a software system works—how its parts fit together, communicate, and handle real-world requirements like users, data, and scale. Think of it like designing a city: you decide roads (communication), buildings (components), traffic flow (data), and how everything grows over time.",
-      "table": [],
-      "images": []
+      "description": "System design is the process of defining the architecture, modules, interfaces, and data for a system to satisfy specified requirements. It involves taking a complex problem and breaking it down into manageable, scalable, and robust technical solutions.",
+      "example": "Imagine building a service like Netflix. System design dictates how user requests are routed, where the massive video files are stored (Content Delivery Networks), how user viewing history is tracked in databases, and how the system handles millions of concurrent users without crashing.",
+      "table": [
+        {
+          "Component": "Client",
+          "Function": "The user-facing interface (web or mobile app).",
+          "Example": "Browser, iOS App"
+        },
+        {
+          "Component": "Web Server",
+          "Function": "Handles incoming HTTP requests and serves static content.",
+          "Example": "Nginx, Apache"
+        },
+        {
+          "Component": "Application Server",
+          "Function": "Executes the core business logic of the application.",
+          "Example": "Node.js, Spring Boot"
+        },
+        {
+          "Component": "Database",
+          "Function": "Stores and retrieves structured or unstructured data.",
+          "Example": "PostgreSQL, MongoDB"
+        }
+      ],
+      "images": [
+        ""
+      ],
+      "externallinks": [
+        "https://github.com/donnemartin/system-design-primer"
+      ]
     },
     {
       "id": "02",
-      "key": "HSD",
+      "key": "HASD",
       "title": "How to Approach System Design",
-      "description": "Step-by-step approach...",
+      "description": "System design interviews and real-world projects require a structured framework. Approaching a problem haphazardly usually leads to missed requirements and unscalable designs. A standard approach typically involves four steps: clarifying requirements, designing the high-level architecture, deep-diving into specific components, and identifying bottlenecks.",
+      "example": "If asked to 'Design Twitter,' you first establish whether you need to support video uploads (functional) and how fast a tweet needs to appear in the feed (non-functional). Then, you draw a broad box-and-arrow diagram before finally discussing how to partition the database.",
+      "table": [
+        {
+          "Requirement Type": "Functional",
+          "Definition": "What the system must do (features).",
+          "Examples for a Chat App": "Send text messages, join group chats, see online status."
+        },
+        {
+          "Requirement Type": "Non-Functional",
+          "Definition": "How the system must perform (qualities).",
+          "Examples for a Chat App": "Highly available, low latency (< 200ms), secure."
+        }
+      ],
+      "images": [],
+      "externallinks": [
+        "https://www.educative.io/courses/grokking-the-system-design-interview"
+      ]
+    },
+    {
+      "id": "03",
+      "key": "PVS",
+      "title": "Performance vs Scalability",
+      "description": "While often used interchangeably, these are distinct concepts. Performance is about making a single unit of work faster (reducing the time it takes to do a task). Scalability is the system's ability to handle an increasing amount of work by adding resources. A system can be performant for one user but completely unscalable for 10,000 users.",
+      "example": "Performance is optimizing a database query to run in 10ms instead of 200ms. Scalability is adding five more database read replicas to handle a sudden surge in traffic.",
+      "table": [
+        {
+          "Strategy": "Vertical Scaling",
+          "Also Known As": "Scaling Up",
+          "Definition": "Adding more power (CPU, RAM) to an existing machine.",
+          "Pros & Cons": "Simple, but has a hard hardware limit and creates a single point of failure."
+        },
+        {
+          "Strategy": "Horizontal Scaling",
+          "Also Known As": "Scaling Out",
+          "Definition": "Adding more machines to your pool of resources.",
+          "Pros & Cons": "Infinite scalability and highly available, but increases architectural complexity."
+        }
+      ],
+      "images": [],
+      "externallinks": [
+        "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/scalability.html"
+      ]
+    },
+    {
+      "id": "04",
+      "key": "LVT",
+      "title": "Latency vs Throughput",
+      "description": "These are the two primary metrics for measuring system performance. Latency is the time it takes for a single request to travel from the sender to the receiver and back. Throughput is the total volume of requests a system can process in a specific timeframe.",
+      "example": "Think of a water pipe. Latency is how long it takes a single drop of water to travel from one end of the pipe to the other. Throughput is how many gallons of water flow out of the pipe per minute.",
+      "table": [
+        {
+          "Metric": "Latency",
+          "Focus": "Speed of a single operation.",
+          "Typical Unit": "Milliseconds (ms)",
+          "Optimization Strategy": "Use Caching, Content Delivery Networks (CDNs), optimize code."
+        },
+        {
+          "Metric": "Throughput",
+          "Focus": "Volume of concurrent operations.",
+          "Typical Unit": "Requests Per Second (RPS) or Mbps",
+          "Optimization Strategy": "Add load balancers, scale horizontally, use asynchronous processing."
+        }
+      ],
+      "images": [],
+      "externallinks": [
+        "https://www.cloudflare.com/learning/performance/latency-vs-throughput/"
+      ]
+    },
+    {
+      "id": "05",
+      "key": "AVC",
+      "title": "Availability vs Consistency",
+      "description": "In distributed systems, there is an inherent trade-off when network issues occur. Availability means the system will always process a user's request, even if it has to serve slightly outdated data. Consistency means the system guarantees the user will see the absolute latest data, even if it has to deny the request (become unavailable) while data is syncing.",
+      "example": "A banking ATM prioritizes Consistency (it won't let you withdraw if it can't verify your balance). A YouTube comment section prioritizes Availability (it will load the page even if a 2-second-old comment hasn't synced yet).",
       "table": [],
-      "images": []
+      "images": [],
+      "externallinks": [
+        "https://www.ibm.com/topics/distributed-computing"
+      ]
+    },
+    {
+      "id": "06",
+      "key": "CAP",
+      "title": "CAP Theorem (AP, CP)",
+      "description": "The CAP theorem states that a distributed database system can only guarantee two out of the following three characteristics: Consistency, Availability, and Partition Tolerance. Because network partitions (P) are unavoidable in distributed systems, a system must effectively choose between Consistency (CP) and Availability (AP) during a failure.",
+      "example": "MongoDB is generally CP; if the primary node goes down, it stops accepting writes to ensure data consistency. Cassandra is AP; if a node goes down, it continues to accept reads and writes, risking eventual consistency but remaining highly available.",
+      "table": [],
+      "images": [
+        "[attachment_0](attachment)"
+      ],
+      "externallinks": [
+        "https://www.ibm.com/topics/cap-theorem"
+      ]
+    },
+    {
+      "id": "07",
+      "key": "CPAT",
+      "title": "Consistency Patterns (Weak, Eventual, Strong)",
+      "description": "When data is replicated across multiple nodes, you must decide how and when the data synchronizes. This defines your consistency pattern. Weak consistency offers no guarantee of seeing updated values. Eventual consistency guarantees that nodes will eventually sync. Strong consistency guarantees a read will always return the most recent write.",
+      "example": "Weak: A glitchy VoIP call where lost data packets are ignored. Eventual: Social media 'Likes' taking a few seconds to update globally. Strong: Booking a flight ticket where a seat instantly becomes unavailable to everyone else.",
+      "table": [
+        {
+          "Pattern": "Weak",
+          "Guarantee": "No guarantee that subsequent reads will see the updated value.",
+          "Use Case": "Live video streaming, VoIP.",
+          "Latency Impact": "Lowest latency."
+        },
+        {
+          "Pattern": "Eventual",
+          "Guarantee": "Updates will propagate, and all nodes will eventually have the same data.",
+          "Use Case": "DNS, social media feeds.",
+          "Latency Impact": "Low latency."
+        },
+        {
+          "Pattern": "Strong",
+          "Guarantee": "A read is guaranteed to return the most recent write.",
+          "Use Case": "Financial transactions, inventory.",
+          "Latency Impact": "Higher latency (must wait for sync)."
+        }
+      ],
+      "images": [],
+      "externallinks": [
+        "https://docs.aws.amazon.com/whitepapers/latest/database-caching-strategies-using-redis/data-consistency.html"
+      ]
+    },
+    {
+      "id": "08",
+      "key": "APAT",
+      "title": "Availability Patterns (Fail-Over, Active-Active, Active-Passive)",
+      "description": "To ensure high availability and eliminate single points of failure, systems use redundancy. Active-Active means a load balancer distributes traffic evenly across multiple active servers. Active-Passive (Fail-over) means one primary server takes 100% of the traffic while a secondary server remains idle. If the primary crashes, the secondary takes over.",
+      "example": "Active-Active: A load balancer splits web traffic 50/50 between Server A and Server B. Active-Passive: Server A handles all database queries while Server B silently replicates the data. If Server A loses power, Server B immediately takes over as the primary database.",
+      "table": [
+        {
+          "Architecture": "Active-Active",
+          "Traffic Distribution": "Split across multiple active nodes.",
+          "Hardware Utilization": "High (all hardware is actively used).",
+          "Best For": "High-traffic applications requiring maximum throughput."
+        },
+        {
+          "Architecture": "Active-Passive",
+          "Traffic Distribution": "100% to primary, 0% to secondary.",
+          "Hardware Utilization": "Low (secondary hardware sits idle).",
+          "Best For": "Systems where state/data synchronization between two active nodes is too complex."
+        }
+      ],
+      "images": [
+        ""
+      ],
+      "externallinks": [
+        "https://www.redhat.com/en/topics/linux/what-is-high-availability"
+      ]
     }
   ]
 }
