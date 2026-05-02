@@ -144,61 +144,7 @@
   .nav-tab:hover { color: var(--ink); background: var(--surface); }
   .nav-tab.active { color: var(--ink); border-bottom-color: var(--accent); background: var(--surface); }
 
-  .modal {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
-}
 
-.hidden {
-  display: none;
-}
-
-/* dark background */
-.modal-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(4px);
-}
-
-/* popup box */
-.modal-box {
-  position: relative;
-  background: white;
-  width: 90%;
-  max-width: 600px;
-  padding: 24px;
-  border-radius: 10px;
-  z-index: 2;
-  max-height: 80vh;
-  overflow-y: auto;
-  animation: pop 0.25s ease;
-}
-
-/* animation */
-@keyframes pop {
-  from {
-    transform: scale(0.9);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-/* close button */
-.close-btn {
-  position: absolute;
-  top: 10px;
-  right: 14px;
-  font-size: 22px;
-  cursor: pointer;
-}
 
 
 
@@ -454,9 +400,6 @@
     .phase-num-block { min-width: 60px; }
   }
 </style>
-<!-- ═══════════════════════════════════════════════
-     PASTE THIS IN YOUR <head>  —  Modal Styles
-═══════════════════════════════════════════════ -->
 <style id="modal-styles">
 
 /* ── Google Font (add to your existing font import if needed) ── */
@@ -690,8 +633,104 @@
   text-transform: uppercase;
   color: #525b7a;
   font-weight: 500;
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #1e2235;
+}
+.m-table td {
+  font-family: 'IBM Plex Mono', monospace;
+  padding: 12px 16px;
+  color: #a8b0cc;
+  border-bottom: 1px solid #1e2235;
+  line-height: 1.55;
+  vertical-align: top;
+}
+.m-table tr:last-child td { border-bottom: none; }
+.m-table tr:hover td { background: rgba(255, 255, 255, 0.025); }
+.m-table td:first-child {
+  color: #fff;
+  font-weight: 600;
+  font-size: 12px;
+  white-space: nowrap;
+}
 
-  
+/* ── images ── */
+.m-images {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.m-img {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid #1e2235;
+}
+
+/* ── external links ── */
+.m-links { display: flex; flex-wrap: wrap; gap: 8px; }
+.m-link {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  padding: 7px 14px;
+  border-radius: 6px;
+  border: 1px solid #262c42;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.18s, border-color 0.18s;
+}
+.m-link:hover { background: rgba(255,255,255,0.04); }
+.m-link svg { width: 11px; height: 11px; flex-shrink: 0; }
+
+/* ── footer ── */
+.modal-footer {
+  flex-shrink: 0;
+  padding: 14px 30px;
+  border-top: 1px solid #1e2235;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.m-footer-id {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: #525b7a;
+  letter-spacing: 2px;
+}
+.m-nav { display: flex; gap: 8px; }
+.m-nav-btn {
+  padding: 7px 16px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid #262c42;
+  background: rgba(255,255,255,0.04);
+  color: #525b7a;
+  font-family: 'IBM Plex Sans', sans-serif;
+  transition: background 0.18s, color 0.18s, border-color 0.18s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.m-nav-btn:hover:not(:disabled) {
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+}
+.m-nav-btn.m-btn-next { color: #08090d; }
+.m-nav-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+
+@media (max-width: 600px) {
+  .modal-header { padding: 18px 18px 14px; }
+  .modal-body   { padding: 18px 18px 22px; }
+  .modal-footer { padding: 12px 18px; }
+  .modal-title  { font-size: 20px; }
+}
+
+</style>
 </head>
 <body>
 <div class="container">
@@ -724,9 +763,6 @@
   </nav>
 
   
-<!-- ═══════════════════════════════════════════════
-     PASTE THIS ANYWHERE IN YOUR <body>  —  Modal HTML
-═══════════════════════════════════════════════ -->
 <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="m-title">
 
   <div class="modal-backdrop" id="modal-backdrop"></div>
@@ -795,11 +831,7 @@
 </div>
 
 
-<!-- ═══════════════════════════════════════════════
-     PASTE BEFORE </body>  —  Modal JavaScript
-═══════════════════════════
-
-  <!-- ====== PHASE 1 ====== -->
+<!-- ====== PHASE 1 ====== -->
   <div class="phase" id="p1">
     <div class="phase-header p1h" onclick="togglePhase(this)">
       <div class="phase-num-block">
@@ -1562,12 +1594,16 @@
 </div>
 
 <script>
-  function togglePhase(header) {
-    header.closest('.phase').classList.toggle('collapsed');
-  }
+(function () {
 
+  // ── phase toggle ──────────────────────────────────────────────
+  window.togglePhase = function(header) {
+    header.closest('.phase').classList.toggle('collapsed');
+  };
+
+  // ── nav scroll highlight ──────────────────────────────────────
   const sections = document.querySelectorAll('.phase[id]');
-  const tabs = document.querySelectorAll('.nav-tab');
+  const tabs     = document.querySelectorAll('.nav-tab');
   window.addEventListener('scroll', () => {
     let current = '';
     sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) current = s.id; });
@@ -1581,113 +1617,30 @@
     this.classList.add('active');
   }));
 
-  // ===== GLOBAL DATA =====
-let DATA = [];
-
-// ===== LOAD JSON =====
-fetch('data.json')
-  .then(res => res.json())
-  .then(d => {
-    DATA = d.topics;
-  })
-  .catch(err => console.error("JSON load error:", err));
-
-
-// ===== MODAL ELEMENTS =====
-const modal = document.getElementById('modal');
-const overlay = document.querySelector('.modal-overlay');
-const closeBtn = document.querySelector('.close-btn');
-
-const mTitle = document.getElementById('m-title');
-const mDesc = document.getElementById('m-desc');
-const mTable = document.getElementById('m-table');
-const mImages = document.getElementById('m-images');
-
-
-// ===== OPEN MODAL FUNCTION =====
-function openModal(topic) {
-  if (!topic) return;
-
-  // title + description
-  mTitle.innerText = topic.title || '';
-  mDesc.innerText = topic.description || '';
-
-  // ===== TABLE =====
-  if (topic.table && topic.table.length) {
-    let tableHTML = '<table border="1" cellpadding="6" cellspacing="0">';
-    
-    topic.table.forEach((row, i) => {
-      tableHTML += '<tr>';
-      row.forEach(cell => {
-        tableHTML += i === 0 
-          ? `<th>${cell}</th>` 
-          : `<td>${cell}</td>`;
-      });
-      tableHTML += '</tr>';
-    });
-
-    tableHTML += '</table>';
-    mTable.innerHTML = tableHTML;
-  } else {
-    mTable.innerHTML = '';
-  }
-
-  // ===== IMAGES =====
-  if (topic.images && topic.images.length) {
-    mImages.innerHTML = topic.images
-      .map(img => `<img src="${img}" style="width:100%;margin-top:10px;border-radius:6px;" />`)
-      .join('');
-  } else {
-    mImages.innerHTML = '';
-  }
-
-  // show modal
-  modal.classList.remove('hidden');
-}
-
-
-// ===== CLOSE MODAL =====
-function closeModal() {
-  modal.classList.add('hidden');
-}
-
-
-// ===== CLICK EVENTS FOR CARDS =====
-document.querySelectorAll('.topic-card').forEach(card => {
-  card.addEventListener('click', () => {
-    const key = card.dataset.key;
-
-    const topic = DATA.find(t => t.key === key);
-    openModal(topic);
-  });
-});
-
-
-// ===== CLOSE EVENTS =====
-closeBtn.onclick = closeModal;
-overlay.onclick = closeModal;
-
-window.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeModal();
-});
-
-
-</script>
-<script>
-(function () {
-
-  // ── accent palette (matches your card order) ──────────────────
+  // ── accent palette ────────────────────────────────────────────
   const ACCENTS = [
-    '#4f8ef7','#f7854f','#4ff7a0','#f74f8e',
-    '#c4a1ff','#f7d44f','#4fd4f7','#f74f4f'
+    '#c23b22','#1a4a6e','#2d6a2d','#7a5c0a',
+    '#6b2d6b','#1a3a3a','#c23b22','#1a4a6e'
   ];
 
   // ── state ─────────────────────────────────────────────────────
-  let DATA          = [];   // filled by your existing fetch / array
-  let currentIndex  = -1;
+  let DATA         = [];
+  let currentIndex = -1;
 
-  // ── expose so your fetch callback can set it ──────────────────
-  window.setModalData = function (topics) { DATA = topics; };
+  // ── load data.json and wire cards ─────────────────────────────
+  fetch('data.json')
+    .then(res => res.json())
+    .then(d => {
+      DATA = d.topics;
+      // wire card clicks after data is ready
+      document.querySelectorAll('.topic-card[data-key]').forEach(card => {
+        card.style.cursor = 'pointer';
+        card.addEventListener('click', () => {
+          window.openModal(card.dataset.key);
+        });
+      });
+    })
+    .catch(err => console.error('JSON load error:', err));
 
   // ═══════════════════════════════════
   //  OPEN
