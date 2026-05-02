@@ -402,19 +402,16 @@
 </style>
 <style id="modal-styles">
 
-/* ── Google Font (add to your existing font import if needed) ── */
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap');
-
-/* ── Accent palette (8 colors, cycles per topic index) ── */
+/* ── Modal accent palette — matches page phase colors ── */
 :root {
-  --ma1: #4f8ef7;
-  --ma2: #f7854f;
-  --ma3: #4ff7a0;
-  --ma4: #f74f8e;
-  --ma5: #c4a1ff;
-  --ma6: #f7d44f;
-  --ma7: #4fd4f7;
-  --ma8: #f74f4f;
+  --ma1: #c23b22;
+  --ma2: #1a4a6e;
+  --ma3: #2d6a2d;
+  --ma4: #7a5c0a;
+  --ma5: #6b2d6b;
+  --ma6: #1a3a3a;
+  --ma7: #c23b22;
+  --ma8: #1a4a6e;
 }
 
 /* ═══════════════════════════════════
@@ -440,9 +437,9 @@
 .modal-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(4, 5, 10, 0.85);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: rgba(26, 22, 18, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
 /* ═══════════════════════════════════
@@ -454,18 +451,15 @@
   width: 100%;
   max-width: 760px;
   max-height: 88vh;
-  background: #12151f;
-  border: 1px solid #262c42;
-  border-radius: 18px;
+  background: var(--bg);
+  border: 2px solid var(--ink);
+  border-radius: 0;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transform: translateY(24px) scale(0.97);
-  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.04),
-    0 32px 80px rgba(0, 0, 0, 0.6),
-    0 0 60px rgba(79, 142, 247, 0.05);
+  transform: translateY(20px) scale(0.98);
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 6px 6px 0 var(--ink);
 }
 .modal.open .modal-box {
   transform: translateY(0) scale(1);
@@ -473,7 +467,7 @@
 
 /* ── shimmer top bar ── */
 .modal-accent-bar {
-  height: 3px;
+  height: 4px;
   flex-shrink: 0;
   position: relative;
   overflow: hidden;
@@ -484,7 +478,7 @@
   position: absolute;
   inset: 0;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
-  animation: m-shimmer 2.4s infinite;
+  animation: m-shimmer 2s infinite;
 }
 @keyframes m-shimmer {
   0%   { transform: translateX(-100%); }
@@ -495,7 +489,7 @@
 .modal-header {
   padding: 26px 30px 18px;
   flex-shrink: 0;
-  border-bottom: 1px solid #1e2235;
+  border-bottom: 2px solid var(--ink);
   display: flex;
   align-items: flex-start;
   gap: 14px;
@@ -503,10 +497,10 @@
 .modal-icon {
   width: 42px;
   height: 42px;
-  border-radius: 10px;
+  border-radius: 0;
   flex-shrink: 0;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid #262c42;
+  background: var(--surface);
+  border: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -514,7 +508,7 @@
 }
 .modal-header-text { flex: 1; min-width: 0; }
 .modal-eyebrow {
-  font-family: 'DM Mono', monospace;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 10px;
   letter-spacing: 3px;
   text-transform: uppercase;
@@ -522,33 +516,33 @@
   /* color set by JS */
 }
 .modal-title {
-  font-family: 'Instrument Serif', serif;
-  font-size: clamp(20px, 3vw, 27px);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(22px, 3vw, 30px);
   font-weight: 400;
-  line-height: 1.15;
-  letter-spacing: -0.4px;
-  color: #fff;
+  line-height: 1.1;
+  letter-spacing: 0.5px;
+  color: var(--ink);
 }
 .modal-close {
   width: 34px;
   height: 34px;
-  border-radius: 8px;
+  border-radius: 0;
   flex-shrink: 0;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid #262c42;
-  color: #525b7a;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 17px;
   line-height: 1;
-  transition: background 0.18s, color 0.18s, transform 0.15s;
+  font-family: 'IBM Plex Mono', monospace;
+  transition: background 0.15s, color 0.15s;
 }
 .modal-close:hover {
-  background: rgba(255, 255, 255, 0.09);
-  color: #fff;
-  transform: scale(1.07);
+  background: var(--ink);
+  color: var(--bg);
 }
 
 /* ── scrollable body ── */
@@ -562,15 +556,15 @@
 }
 .modal-body::-webkit-scrollbar { width: 4px; }
 .modal-body::-webkit-scrollbar-track { background: transparent; }
-.modal-body::-webkit-scrollbar-thumb { background: #262c42; border-radius: 4px; }
+.modal-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 0; }
 
 /* ── section label ── */
 .m-section-label {
-  font-family: 'DM Mono', monospace;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 9px;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: #525b7a;
+  color: var(--muted);
   margin-bottom: 10px;
   display: flex;
   align-items: center;
@@ -580,27 +574,27 @@
   content: '';
   flex: 1;
   height: 1px;
-  background: #1e2235;
+  background: var(--border);
 }
 
 /* ── description ── */
 .m-description {
-  font-family: 'Syne', sans-serif;
+  font-family: 'IBM Plex Sans', sans-serif;
   font-size: 14px;
-  line-height: 1.82;
-  color: #a8b0cc;
+  line-height: 1.8;
+  color: var(--ink2);
 }
 
 /* ── example callout ── */
 .m-example {
-  background: rgba(255, 255, 255, 0.025);
-  border: 1px solid #262c42;
-  border-left: 3px solid #4f8ef7; /* overridden by JS */
-  border-radius: 0 10px 10px 0;
-  padding: 16px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent); /* overridden by JS */
+  border-radius: 0;
+  padding: 14px 18px;
 }
 .m-example-label {
-  font-family: 'DM Mono', monospace;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 9px;
   letter-spacing: 3px;
   text-transform: uppercase;
@@ -608,17 +602,17 @@
   /* color set by JS */
 }
 .m-example-text {
-  font-family: 'Syne', sans-serif;
+  font-family: 'IBM Plex Sans', sans-serif;
   font-size: 13px;
-  line-height: 1.78;
-  color: #8890aa;
+  line-height: 1.75;
+  color: var(--muted);
 }
 
 /* ── table ── */
 .m-table-wrap {
   overflow-x: auto;
-  border-radius: 10px;
-  border: 1px solid #1e2235;
+  border-radius: 0;
+  border: 1px solid var(--border);
 }
 .m-table {
   width: 100%;
@@ -626,31 +620,32 @@
   font-size: 12.5px;
 }
 .m-table th {
-  background: rgba(255, 255, 255, 0.04);
-  font-family: 'DM Mono', monospace;
+  background: var(--ink);
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 9px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: #525b7a;
+  color: var(--bg);
   font-weight: 500;
-  padding: 12px 16px;
+  padding: 10px 14px;
   text-align: left;
-  border-bottom: 1px solid #1e2235;
+  border-bottom: 1px solid var(--border);
 }
 .m-table td {
   font-family: 'IBM Plex Mono', monospace;
-  padding: 12px 16px;
-  color: #a8b0cc;
-  border-bottom: 1px solid #1e2235;
-  line-height: 1.55;
+  padding: 9px 14px;
+  color: var(--ink2);
+  border-bottom: 1px solid var(--border);
+  line-height: 1.5;
   vertical-align: top;
 }
 .m-table tr:last-child td { border-bottom: none; }
-.m-table tr:hover td { background: rgba(255, 255, 255, 0.025); }
+.m-table tr:nth-child(even) td { background: var(--surface); }
+.m-table tr:hover td { background: var(--card); }
 .m-table td:first-child {
-  color: #fff;
+  color: var(--ink);
   font-weight: 600;
-  font-size: 12px;
+  font-size: 11px;
   white-space: nowrap;
 }
 
@@ -662,8 +657,8 @@
 }
 .m-img {
   width: 100%;
-  border-radius: 10px;
-  border: 1px solid #1e2235;
+  border-radius: 0;
+  border: 1px solid var(--border);
 }
 
 /* ── external links ── */
@@ -672,23 +667,27 @@
   font-family: 'IBM Plex Mono', monospace;
   font-size: 10px;
   letter-spacing: 0.5px;
-  padding: 7px 14px;
-  border-radius: 6px;
-  border: 1px solid #262c42;
+  padding: 6px 12px;
+  border-radius: 0;
+  border: 1px solid var(--border);
   text-decoration: none;
   display: flex;
   align-items: center;
   gap: 6px;
-  transition: background 0.18s, border-color 0.18s;
+  color: var(--ink2);
+  transition: background 0.15s, border-color 0.15s;
 }
-.m-link:hover { background: rgba(255,255,255,0.04); }
+.m-link:hover {
+  background: var(--surface);
+  border-color: var(--ink);
+}
 .m-link svg { width: 11px; height: 11px; flex-shrink: 0; }
 
 /* ── footer ── */
 .modal-footer {
   flex-shrink: 0;
   padding: 14px 30px;
-  border-top: 1px solid #1e2235;
+  border-top: 2px solid var(--ink);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -697,31 +696,43 @@
 .m-footer-id {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 10px;
-  color: #525b7a;
+  color: var(--muted);
   letter-spacing: 2px;
 }
 .m-nav { display: flex; gap: 8px; }
 .m-nav-btn {
-  padding: 7px 16px;
-  border-radius: 7px;
-  font-size: 12px;
-  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 0;
+  font-size: 11px;
+  font-weight: 500;
   cursor: pointer;
-  border: 1px solid #262c42;
-  background: rgba(255,255,255,0.04);
-  color: #525b7a;
-  font-family: 'IBM Plex Sans', sans-serif;
-  transition: background 0.18s, color 0.18s, border-color 0.18s;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
   display: flex;
   align-items: center;
   gap: 6px;
 }
 .m-nav-btn:hover:not(:disabled) {
-  background: rgba(255,255,255,0.08);
-  color: #fff;
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
 }
-.m-nav-btn.m-btn-next { color: #08090d; }
-.m-nav-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+.m-nav-btn.m-btn-next {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+.m-nav-btn.m-btn-next:hover:not(:disabled) {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--bg);
+}
+.m-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
 @media (max-width: 600px) {
   .modal-header { padding: 18px 18px 14px; }
@@ -1762,7 +1773,7 @@
     const nextBtn = document.getElementById('btn-next');
     nextBtn.style.background  = accent;
     nextBtn.style.borderColor = accent;
-    nextBtn.style.color       = '#08090d';
+    nextBtn.style.color       = 'white';
 
     // ── scroll body to top ──
     document.getElementById('modal-body').scrollTop = 0;
