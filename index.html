@@ -454,6 +454,244 @@
     .phase-num-block { min-width: 60px; }
   }
 </style>
+<!-- ═══════════════════════════════════════════════
+     PASTE THIS IN YOUR <head>  —  Modal Styles
+═══════════════════════════════════════════════ -->
+<style id="modal-styles">
+
+/* ── Google Font (add to your existing font import if needed) ── */
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap');
+
+/* ── Accent palette (8 colors, cycles per topic index) ── */
+:root {
+  --ma1: #4f8ef7;
+  --ma2: #f7854f;
+  --ma3: #4ff7a0;
+  --ma4: #f74f8e;
+  --ma5: #c4a1ff;
+  --ma6: #f7d44f;
+  --ma7: #4fd4f7;
+  --ma8: #f74f4f;
+}
+
+/* ═══════════════════════════════════
+   OVERLAY
+═══════════════════════════════════ */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
+}
+.modal.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(4, 5, 10, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* ═══════════════════════════════════
+   BOX
+═══════════════════════════════════ */
+.modal-box {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 760px;
+  max-height: 88vh;
+  background: #12151f;
+  border: 1px solid #262c42;
+  border-radius: 18px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(24px) scale(0.97);
+  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 32px 80px rgba(0, 0, 0, 0.6),
+    0 0 60px rgba(79, 142, 247, 0.05);
+}
+.modal.open .modal-box {
+  transform: translateY(0) scale(1);
+}
+
+/* ── shimmer top bar ── */
+.modal-accent-bar {
+  height: 3px;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  /* background set by JS per topic */
+}
+.modal-accent-bar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+  animation: m-shimmer 2.4s infinite;
+}
+@keyframes m-shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ── header ── */
+.modal-header {
+  padding: 26px 30px 18px;
+  flex-shrink: 0;
+  border-bottom: 1px solid #1e2235;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.modal-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid #262c42;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+.modal-header-text { flex: 1; min-width: 0; }
+.modal-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+  /* color set by JS */
+}
+.modal-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(20px, 3vw, 27px);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.4px;
+  color: #fff;
+}
+.modal-close {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid #262c42;
+  color: #525b7a;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  line-height: 1;
+  transition: background 0.18s, color 0.18s, transform 0.15s;
+}
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.09);
+  color: #fff;
+  transform: scale(1.07);
+}
+
+/* ── scrollable body ── */
+.modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 26px 30px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+.modal-body::-webkit-scrollbar { width: 4px; }
+.modal-body::-webkit-scrollbar-track { background: transparent; }
+.modal-body::-webkit-scrollbar-thumb { background: #262c42; border-radius: 4px; }
+
+/* ── section label ── */
+.m-section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #525b7a;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.m-section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #1e2235;
+}
+
+/* ── description ── */
+.m-description {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  line-height: 1.82;
+  color: #a8b0cc;
+}
+
+/* ── example callout ── */
+.m-example {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid #262c42;
+  border-left: 3px solid #4f8ef7; /* overridden by JS */
+  border-radius: 0 10px 10px 0;
+  padding: 16px 20px;
+}
+.m-example-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  /* color set by JS */
+}
+.m-example-text {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  line-height: 1.78;
+  color: #8890aa;
+}
+
+/* ── table ── */
+.m-table-wrap {
+  overflow-x: auto;
+  border-radius: 10px;
+  border: 1px solid #1e2235;
+}
+.m-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+.m-table th {
+  background: rgba(255, 255, 255, 0.04);
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #525b7a;
+  font-weight: 500;
+
+  
 </head>
 <body>
 <div class="container">
@@ -485,16 +723,81 @@
     </div>
   </nav>
 
-  <div id="modal" class="modal hidden">
-    <div class="modal-overlay"></div>
-    <div class="modal-box">
-      <span class="close-btn">&times;</span>
-      <h2 id="m-title"></h2>
-      <p id="m-desc"></p>
-      <div id="m-table"></div>
-      <div id="m-images"></div>
+  
+<!-- ═══════════════════════════════════════════════
+     PASTE THIS ANYWHERE IN YOUR <body>  —  Modal HTML
+═══════════════════════════════════════════════ -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="m-title">
+
+  <div class="modal-backdrop" id="modal-backdrop"></div>
+
+  <div class="modal-box">
+
+    <!-- shimmer accent bar -->
+    <div class="modal-accent-bar" id="m-accent-bar"></div>
+
+    <!-- header -->
+    <div class="modal-header">
+      <div class="modal-icon"     id="m-icon">📐</div>
+      <div class="modal-header-text">
+        <div class="modal-eyebrow" id="m-eyebrow">TOPIC</div>
+        <h2  class="modal-title"   id="m-title">—</h2>
+      </div>
+      <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
     </div>
+
+    <!-- scrollable body -->
+    <div class="modal-body" id="modal-body">
+
+      <!-- description -->
+      <div id="m-desc-block">
+        <div class="m-section-label">Overview</div>
+        <p class="m-description" id="m-desc"></p>
+      </div>
+
+      <!-- example callout -->
+      <div id="m-example-block" style="display:none">
+        <div class="m-example" id="m-example-box">
+          <div class="m-example-label" id="m-example-label">Real World Example</div>
+          <p   class="m-example-text"  id="m-example"></p>
+        </div>
+      </div>
+
+      <!-- reference table -->
+      <div id="m-table-block" style="display:none">
+        <div class="m-section-label">Reference Table</div>
+        <div class="m-table-wrap">
+          <table class="m-table" id="m-table"></table>
+        </div>
+      </div>
+
+      <!-- images -->
+      <div class="m-images" id="m-images-block" style="display:none"></div>
+
+      <!-- external links -->
+      <div id="m-links-block" style="display:none">
+        <div class="m-section-label">Learn More</div>
+        <div class="m-links" id="m-links"></div>
+      </div>
+
+    </div>
+
+    <!-- footer -->
+    <div class="modal-footer">
+      <span class="m-footer-id" id="m-footer-id">—</span>
+      <div class="m-nav">
+        <button class="m-nav-btn"          id="btn-prev" onclick="navModal(-1)">← Prev</button>
+        <button class="m-nav-btn m-btn-next" id="btn-next" onclick="navModal(1)">Next →</button>
+      </div>
+    </div>
+
   </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════
+     PASTE BEFORE </body>  —  Modal JavaScript
+═══════════════════════════
 
   <!-- ====== PHASE 1 ====== -->
   <div class="phase" id="p1">
@@ -1369,6 +1672,182 @@ window.addEventListener('keydown', (e) => {
 });
 
 
+</script>
+<script>
+(function () {
+
+  // ── accent palette (matches your card order) ──────────────────
+  const ACCENTS = [
+    '#4f8ef7','#f7854f','#4ff7a0','#f74f8e',
+    '#c4a1ff','#f7d44f','#4fd4f7','#f74f4f'
+  ];
+
+  // ── state ─────────────────────────────────────────────────────
+  let DATA          = [];   // filled by your existing fetch / array
+  let currentIndex  = -1;
+
+  // ── expose so your fetch callback can set it ──────────────────
+  window.setModalData = function (topics) { DATA = topics; };
+
+  // ═══════════════════════════════════
+  //  OPEN
+  // ═══════════════════════════════════
+  window.openModal = function (indexOrKey) {
+
+    // accept numeric index OR string key
+    const index = typeof indexOrKey === 'number'
+      ? indexOrKey
+      : DATA.findIndex(t => t.key === indexOrKey);
+
+    if (index < 0 || index >= DATA.length) return;
+    currentIndex = index;
+
+    const t      = DATA[index];
+    const accent = ACCENTS[index % ACCENTS.length];
+
+    // ── accent bar ──
+    document.getElementById('m-accent-bar').style.background = accent;
+
+    // ── icon ──
+    document.getElementById('m-icon').textContent = t.icon || '📐';
+
+    // ── eyebrow ──
+    const eyebrow = document.getElementById('m-eyebrow');
+    eyebrow.textContent = `Topic ${t.id} · ${t.key}`;
+    eyebrow.style.color = accent;
+
+    // ── title ──
+    document.getElementById('m-title').textContent = t.title || '';
+
+    // ── description ──
+    document.getElementById('m-desc').textContent = t.description || '';
+
+    // ── example ──
+    const exBlock = document.getElementById('m-example-block');
+    if (t.example) {
+      document.getElementById('m-example').textContent       = t.example;
+      document.getElementById('m-example-box').style.borderLeftColor = accent;
+      document.getElementById('m-example-label').style.color         = accent;
+      exBlock.style.display = 'block';
+    } else {
+      exBlock.style.display = 'none';
+    }
+
+    // ── table ──
+    const tblBlock = document.getElementById('m-table-block');
+    const tblEl    = document.getElementById('m-table');
+    tblEl.innerHTML = '';
+
+    if (t.table && t.table.length) {
+      const keys = Object.keys(t.table[0]);
+
+      // thead
+      const thead = tblEl.createTHead();
+      const hRow  = thead.insertRow();
+      keys.forEach(k => {
+        const th = document.createElement('th');
+        th.textContent = k;
+        hRow.appendChild(th);
+      });
+
+      // tbody
+      const tbody = tblEl.createTBody();
+      t.table.forEach(row => {
+        const tr = tbody.insertRow();
+        keys.forEach(k => {
+          const td = tr.insertCell();
+          td.textContent = row[k] || '—';
+        });
+      });
+
+      tblBlock.style.display = 'block';
+    } else {
+      tblBlock.style.display = 'none';
+    }
+
+    // ── images ──
+    const imgBlock   = document.getElementById('m-images-block');
+    const validImgs  = (t.images || []).filter(s => s && s.trim() && !s.includes('attachment'));
+    if (validImgs.length) {
+      imgBlock.innerHTML     = validImgs
+        .map(src => `<img class="m-img" src="${src}" alt="" loading="lazy"/>`)
+        .join('');
+      imgBlock.style.display = 'flex';
+    } else {
+      imgBlock.style.display = 'none';
+      imgBlock.innerHTML     = '';
+    }
+
+    // ── external links ──
+    const linkBlock  = document.getElementById('m-links-block');
+    const linksEl    = document.getElementById('m-links');
+    const validLinks = (t.externallinks || []).filter(l => l && l.startsWith('http'));
+    if (validLinks.length) {
+      linksEl.innerHTML = validLinks.map(url => {
+        let domain = url;
+        try { domain = new URL(url).hostname.replace('www.', ''); } catch (_) {}
+        return `
+          <a class="m-link" href="${url}" target="_blank" rel="noopener"
+             style="color:${accent}">
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M5 2H2a1 1 0 00-1 1v7a1 1 0 001 1h7a1 1 0 001-1V7"/>
+              <path d="M8 1h3v3M11 1L6 6"/>
+            </svg>
+            ${domain}
+          </a>`;
+      }).join('');
+      linkBlock.style.display = 'block';
+    } else {
+      linkBlock.style.display = 'none';
+    }
+
+    // ── footer ──
+    document.getElementById('m-footer-id').textContent = `${index + 1} of ${DATA.length}`;
+    document.getElementById('btn-prev').disabled = index === 0;
+    document.getElementById('btn-next').disabled = index === DATA.length - 1;
+
+    const nextBtn = document.getElementById('btn-next');
+    nextBtn.style.background  = accent;
+    nextBtn.style.borderColor = accent;
+    nextBtn.style.color       = '#08090d';
+
+    // ── scroll body to top ──
+    document.getElementById('modal-body').scrollTop = 0;
+
+    // ── show ──
+    document.getElementById('modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  };
+
+  // ═══════════════════════════════════
+  //  NAV (prev / next)
+  // ═══════════════════════════════════
+  window.navModal = function (dir) {
+    const next = currentIndex + dir;
+    if (next >= 0 && next < DATA.length) window.openModal(next);
+  };
+
+  // ═══════════════════════════════════
+  //  CLOSE
+  // ═══════════════════════════════════
+  window.closeModal = function () {
+    document.getElementById('modal').classList.remove('open');
+    document.body.style.overflow = '';
+    currentIndex = -1;
+  };
+
+  // ── wire close triggers ──
+  document.getElementById('modal-close').onclick    = window.closeModal;
+  document.getElementById('modal-backdrop').onclick = window.closeModal;
+
+  window.addEventListener('keydown', function (e) {
+    if (!document.getElementById('modal').classList.contains('open')) return;
+    if (e.key === 'Escape')     window.closeModal();
+    if (e.key === 'ArrowRight') window.navModal(1);
+    if (e.key === 'ArrowLeft')  window.navModal(-1);
+  });
+
+})();
 </script>
 </body>
 </html>
